@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Günün Ayeti ve Duası | Ayetin Vakti</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #10b981;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Kart Alanı */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px 24px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .badge {
+            align-self: flex-start;
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .arabic-text {
+            font-size: 1.4rem;
+            text-align: right;
+            line-height: 1.8;
+            color: #e2e8f0;
+            font-family: 'Traditional Arabic', 'Naskh', serif;
+            margin-top: 5px;
+        }
+
+        .meaning-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            font-style: italic;
+        }
+
+        .source-text {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Eylem Butonları */
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #059669;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            background-color: var(--accent-color);
+            color: #0f172a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .footer {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Günün Ayeti & Duası</h1>
+        <p>Her gün yeni bir feyz ve ilham</p>
+    </div>
+
+    <div class="card">
+        <span class="badge" id="type-badge">Ayet-i Kerime</span>
+        
+        <div class="arabic-text" id="arabic-content">
+            فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ
+        </div>
+
+        <div class="meaning-text" id="meaning-content">
+            "Öyleyse beni anın ki ben de sizi anayım. Bana şükredin, nankörlük etmeyin."
+        </div>
+
+        <div class="source-text" id="source-content">
+            — Bakara Suresi, 152. Ayet
+        </div>
+
+        <div class="actions">
+            <button class="btn" onclick="copyContent()">📋 Kopyala</button>
+            <button class="btn" onclick="shareContent()">🔗 Paylaş</button>
+            <button class="btn btn-primary" onclick="getRandomContent()">🎲 Başka Getir</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        Ayetin Vakti • Günlük Huzur
+    </div>
+</div>
+
+<div class="toast" id="toast">Metin kopyalandı!</div>
+
+<script>
+    const database = [
+        {
+            type: "Ayet-i Kerime",
+            arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
+            meaning: "Öyleyse beni anın ki ben de sizi anayım. Bana şükredin, nankörlük etmeyin.",
+            source: "Bakara Suresi, 152. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+            meaning: "Bilesiniz ki, kalpler ancak Allah'ı anmakla huzur bulur.",
+            source: "Ra'd Suresi, 28. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+            meaning: "Şüphesiz her güçlükle beraber bir kolaylık vardır.",
+            source: "İnşirah Suresi, 6. Ayet"
+        },
+        {
+            type: "Günün Duası",
+            arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+            meaning: "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru.",
+            source: "Bakara Suresi, 201. Ayet"
+        },
+        {
+            type: "Günün Duası",
+            arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
+            meaning: "Rabbim! Göğsümü genişlet, işimi kolaylaştır.",
+            source: "Tâhâ Suresi, 25-26. Ayetler"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
+            meaning: "Ameller ancak niyetlere göredir.",
+            source: "Buhârî, Bed'ü'l-vahy, 1"
+        }
+    ];
+
+    let currentIndex = 0;
+
+    function getRandomContent() {
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * database.length);
+        } while (newIndex === currentIndex && database.length > 1);
+        
+        currentIndex = newIndex;
+        const item = database[currentIndex];
+
+        document.getElementById('type-badge').innerText = item.type;
+        document.getElementById('arabic-content').innerText = item.arabic;
+        document.getElementById('meaning-content').innerText = `"${item.meaning}"`;
+        document.getElementById('source-content').innerText = `— ${item.source}`;
+    }
+
+    function copyContent() {
+        const item = database[currentIndex];
+        const textToCopy = `${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\nAyetin Vakti projesinden paylaşıldı.`;
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showToast("Metin kopyalandı!");
+        });
+    }
+
+    function shareContent() {
+        const item = database[currentIndex];
+        const shareData = {
+            title: 'Ayetin Vakti',
+            text: `${item.type}: "${item.meaning}" (${item.source})`,
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(() => {});
+        } else {
+            copyContent();
+        }
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2000);
+    }
+</script>
+
+</body>
+</html>
