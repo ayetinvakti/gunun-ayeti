@@ -10,8 +10,8 @@
     <meta property="og:type" content="website">
     <style>
         button {
-    touch-action: manipulation;
-}
+            touch-action: manipulation;
+        }
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -214,6 +214,7 @@
 
 <script>
     const database = [
+        // --- AYETLER ---
         {
             type: "Ayet-i Kerime",
             arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
@@ -234,7 +235,7 @@
         },
         {
             type: "Ayet-i Kerime",
-            arabic: "وَاصْبِرْ لِحُقْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا",
+            arabic: "وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا",
             meaning: "Rabbinin hükmüne sabret. Çünkü sen gözümüzün önündesin.",
             source: "Tûr Suresi, 48. Ayet"
         },
@@ -242,8 +243,40 @@
             type: "Ayet-i Kerime",
             arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
             meaning: "Allah bize yeter, O ne güzel vekildir.",
-            source: "Al-i İmran Suresi, 173. Ayet"
+            source: "Âl-i İmrân Suresi, 173. Ayet"
         },
+        {
+            type: "Ayet-i Kerime",
+            arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ",
+            meaning: "Kullarım sana beni sorarlarsa şüphesiz ben yakınım. Dua edenin duasına icabet ederim.",
+            source: "Bakara Suresi, 186. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+            meaning: "Şüphesiz Allah sabredenlerle beraberdir.",
+            source: "Bakara Suresi, 153. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            arabic: "وَقُلْ رَبِّ زِدْنِي عِلْمًا",
+            meaning: "De ki: 'Rabbim! İlmimi artır.'",
+            source: "Tâhâ Suresi, 114. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            arabic: "وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا",
+            meaning: "Kim Allah'a karşı gelmekten sakınırsa, Allah ona bir çıkış yolu ihsan eder.",
+            source: "Talâq Suresi, 2. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            arabic: "وَاللَّهُ يَعْلَمُ وَأَنْتُمْ لَا تَعْلَمُونَ",
+            meaning: "Allah bilir, siz bilmezsiniz.",
+            source: "Bakara Suresi, 216. Ayet"
+        },
+
+        // --- DUALAR ---
         {
             type: "Günün Duası",
             arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
@@ -258,16 +291,54 @@
         },
         {
             type: "Günün Duası",
-            arabic: "رَبِّ زِدْنِي عِلْمًا",
-            meaning: "Rabbim, ilmimi artır.",
-            source: "Tâhâ Suresi, 114. Ayet"
+            arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً",
+            meaning: "Rabbimiz! Bizi doğru yola ilettikten sonra kalplerimizi eğriltme. Bize katından bir rahmet lütfet.",
+            source: "Âl-i İmrân Suresi, 8. Ayet"
         },
         {
             type: "Günün Duası",
-            arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً",
-            meaning: "Rabbimiz! Bizi doğru yola ilettikten sonra kalplerimizi eğriltme. Bize katından bir rahmet lütfet.",
-            source: "Al-i İmran Suresi, 8. Ayet"
+            arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
+            source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
+        {
+            type: "Günün Duası",
+            arabic: "رَبِّ إنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+            meaning: "Rabbim! Bana indireceğin her hayra muhtacım.",
+            source: "Kasas Suresi, 24. Ayet (Hz. Musa'nın Duası)"
+        },
+        {
+            type: "Günün Duası",
+            arabic: "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+            meaning: "Rabbimiz! Hesap görülecek günde beni, ana-babamı ve müminleri bağışla.",
+            source: "İbrâhîm Suresi, 41. Ayet"
+        },
+        {
+            type: "Günün Duası",
+            arabic: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+            meaning: "Allah'ım! Sen affedicisin, affetmeyi seversin, beni de affet.",
+            source: "Tirmizî, Deavât, 84"
+        },
+        {
+            type: "Günün Duası",
+            arabic: "رَبِّ هَبْ لِي مِنَ الصَّالِحِينَ",
+            meaning: "Rabbim! Bana salihlerden olacak bir evlat bağışla.",
+            source: "Sâffât Suresi, 100. Ayet"
+        },
+        {
+            type: "Günün Duası",
+            arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ",
+            meaning: "Rabbimiz! Bize eşlerimizden ve soyumuzdan göz aydınlığı olacak nesiller bağışla.",
+            source: "Furkân Suresi, 74. Ayet"
+        },
+        {
+            type: "Günün Duası",
+            arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+            meaning: "Allah'ım! Seni anıp zikretmek, sana şükretmek ve sana güzelce ibadet etmek için bana yardım et.",
+            source: "Ebu Davud, Vitir, 26"
+        },
+
+        // --- HADİSLER ---
         {
             type: "Hadis-i Şerif",
             arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
@@ -285,6 +356,48 @@
             arabic: "الدُّعَاءُ هُوَ الْعِبَادَةُ",
             meaning: "Dua ibadetin ta kendisidir.",
             source: "Tirmizî, Deavât, 1"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ",
+            meaning: "Müslüman, diğer Müslümanların elinden ve dilinden güvende olduğu kimsedir.",
+            source: "Buhârî, Îmân, 4"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
+            meaning: "Din kardeşine tebessüm etmen senin için bir sadakadır.",
+            source: "Tirmizî, Birr, 36"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+            meaning: "Sizden biriniz kendisi için istediğini kardeşi için de istemedikçe tam iman etmiş olmaz.",
+            source: "Buhârî, Îmân, 7"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "الطُّهُورُ شَطْرُ الإِيمَانِ",
+            meaning: "Temizlik imanın yarısıdır.",
+            source: "Müslim, Tahâret, 1"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
+            meaning: "Allah'a ve ahiret gününe iman eden ya hayır söylesin ya da sussun.",
+            source: "Buhârî, Edeb, 31"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ",
+            meaning: "Allah katında amellerin en makbulü, az da olsa devamlı olanıdır.",
+            source: "Müslim, Musâfirîn, 218"
+        },
+        {
+            type: "Hadis-i Şerif",
+            arabic: "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+            meaning: "Güzel söz sadakadır.",
+            source: "Buhârî, Cihâd, 128"
         }
     ];
 
