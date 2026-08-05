@@ -193,16 +193,15 @@
 
         .audio-actions {
             display: flex;
-            gap: 8px;
             border-top: 1px dashed var(--border-color);
             padding-top: 12px;
             margin-top: 4px;
         }
 
         .audio-btn {
-            flex: 1;
+            width: 100%;
             padding: 10px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 600;
             border-radius: 8px;
             border: 1px solid var(--border-color);
@@ -234,12 +233,12 @@
             background-color: var(--btn-bg);
             color: var(--text-color);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 4px;
             touch-action: manipulation;
         }
 
@@ -428,14 +427,13 @@
         </div>
 
         <div class="audio-actions">
-            <button class="audio-btn" id="btn-audio-ar" onclick="playArabic()">🎙️ Hafız Tilaveti (Arapça)</button>
-            <button class="audio-btn" id="btn-audio-tr" onclick="playTurkish()">🔊 Sesli Meal (Türkçe)</button>
+            <button class="audio-btn" id="btn-audio-ar" onclick="playArabic()">🎙️ Hafız Tilaveti (Arapça Dinle)</button>
         </div>
 
         <div class="actions">
             <button class="btn" onclick="copyContent()">📋 Kopyala</button>
             <button class="btn" onclick="shareContent()">🔗 Paylaş</button>
-            <button class="btn btn-primary" onclick="getRandomContent()">✨ Başka Getir</button>
+            <button class="btn btn-primary" onclick="getRandomContent()">Yeni 🌟(Ayet, Dua Hadis)</button>
         </div>
     </div>
 
@@ -548,7 +546,7 @@
     let toastTimeout = null;
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     let currentAudio = null;
-    let activeType = null;
+    let isPlaying = false;
 
     function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -584,7 +582,7 @@
     }
 
     function renderContent(index) {
-        stopAllAudio();
+        stopAudio();
         currentIndex = index;
         const item = database[currentIndex];
 
@@ -668,38 +666,31 @@
         openFavoritesModal();
     }
 
-    // --- SES SİSTEMİ (QURAN.COM OFFICIAL API MİMARİSİ) ---
-    function stopAllAudio() {
+    // --- Sadece Arapça Ses Çalan Sistem ---
+    function stopAudio() {
         if (currentAudio) {
             currentAudio.pause();
             currentAudio.src = "";
             currentAudio = null;
         }
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-        }
-        activeType = null;
-        document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça)";
-        document.getElementById('btn-audio-tr').innerText = "🔊 Sesli Meal (Türkçe)";
+        isPlaying = false;
+        document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça Dinle)";
     }
 
     function playArabic() {
         const item = database[currentIndex];
         const btn = document.getElementById('btn-audio-ar');
 
-        if (activeType === 'ar') {
-            stopAllAudio();
+        if (isPlaying) {
+            stopAudio();
             return;
         }
-
-        stopAllAudio();
 
         if (!item.sura || !item.ayah) {
-            showToast("Hadis-i Şerifler için ses seçeneği kısıtlıdır.");
+            showToast("Hadis-i Şerifler için tilavet sesi bulunmamaktadır.");
             return;
         }
 
-        activeType = 'ar';
         btn.innerText = "⌛ Yükleniyor...";
 
         const suraStr = String(item.sura).padStart(3, '0');
@@ -709,97 +700,16 @@
         currentAudio = new Audio(audioUrl);
 
         currentAudio.play().then(() => {
+            isPlaying = true;
             btn.innerText = "⏹ Durdur";
         }).catch(() => {
-            stopAllAudio();
-            showToast("Arapça ses yüklenemedi.");
+            stopAudio();
+            showToast("Ses yüklenirken bir hata oluştu.");
         });
 
         currentAudio.onended = () => {
-            stopAllAudio();
+            stopAudio();
         };
-    }
-
-    async function playTurkish() {
-        const item = database[currentIndex];
-        const btn = document.getElementById('btn-audio-tr');
-
-        if (activeType === 'tr') {
-            stopAllAudio();
-            return;
-        }
-
-        stopAllAudio();
-        activeType = 'tr';
-        btn.innerText = "⌛ Yükleniyor...";
-
-        if (!item.sura || !item.ayah) {
-            speakTTS(item.meaning, 'tr-TR', btn);
-            return;
-        }
-
-        try {
-            // Quran.com v4 API üzerinden dinamik Türkçe ses dosyasını çekiyoruz
-            // Reciter ID 11 / 12 (Alafasy Türkçe Meal / Hamdi Döndüren)
-            const response = await fetch(`https://api.quran.com/api/v4/recitations/12/by_ayah/${item.sura}:${item.ayah}`);
-            
-            if (!response.ok) throw new Error("API yanıt vermedi");
-
-            const data = await response.json();
-            
-            if (data.audio_files && data.audio_files.length > 0) {
-                let audioPath = data.audio_files[0].url;
-                
-                if (!audioPath.startsWith('http')) {
-                    audioPath = `https://audio.qurancdn.com/${audioPath}`;
-                }
-
-                currentAudio = new Audio(audioPath);
-
-                currentAudio.play().then(() => {
-                    btn.innerText = "⏹ Durdur";
-                }).catch(() => {
-                    // Tarayıcı kısıtlaması yaşanırsa TTS'e devret
-                    speakTTS(item.meaning, 'tr-TR', btn);
-                });
-
-                currentAudio.onended = () => {
-                    stopAllAudio();
-                };
-            } else {
-                speakTTS(item.meaning, 'tr-TR', btn);
-            }
-        } catch (err) {
-            // Sunucu isteği başarısız olursa kesintisiz şekilde TTS'e fallback yapar
-            speakTTS(item.meaning, 'tr-TR', btn);
-        }
-    }
-
-    function speakTTS(text, lang, btn) {
-        if (!('speechSynthesis' in window)) {
-            stopAllAudio();
-            showToast("Cihazınızda ses motoru bulunamadı.");
-            return;
-        }
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-        utterance.rate = 0.9;
-
-        utterance.onstart = () => {
-            btn.innerText = "⏹ Durdur";
-        };
-
-        utterance.onend = () => {
-            stopAllAudio();
-        };
-
-        utterance.onerror = () => {
-            stopAllAudio();
-            showToast("Ses oynatılamadı.");
-        };
-
-        window.speechSynthesis.speak(utterance);
     }
 
     function copyContent() {
