@@ -205,8 +205,9 @@
 
         .audio-btn {
             flex: 1;
-            padding: 8px;
-            font-size: 0.8rem;
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
             border-radius: 8px;
             border: 1px solid var(--border-color);
             background-color: var(--btn-bg);
@@ -432,7 +433,7 @@
         </div>
 
         <div class="audio-actions">
-            <button class="audio-btn" id="btn-audio-ar" onclick="speakArabic()">🔊 Arapça Okunuş</button>
+            <button class="audio-btn" id="btn-audio-ar" onclick="playTilavet()">🎙️ Hafız Tilaveti (Arapça)</button>
             <button class="audio-btn" id="btn-audio-tr" onclick="speakTurkish()">🔊 Türkçe Meali</button>
         </div>
 
@@ -465,77 +466,75 @@
 
 <script>
     const database = [
-        // --- AYET-İ KERİMELER ---
+        // --- AYET-İ KERİMELER (Sure ve Ayet Numaralı) ---
         {
             type: "Ayet-i Kerime",
+            sura: 2, ayah: 152,
             arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
             meaning: "Öyleyse beni anın ki ben de sizi anayım. Bana şükredin, nankörlük etmeyin.",
             source: "Bakara Suresi, 152. Ayet"
         },
         {
             type: "Ayet-i Kerime",
+            sura: 13, ayah: 28,
             arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
             meaning: "Bilesiniz ki, kalpler ancak Allah'ı anmakla huzur bulur.",
             source: "Ra'd Suresi, 28. Ayet"
         },
         {
             type: "Ayet-i Kerime",
+            sura: 94, ayah: 6,
             arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
             meaning: "Şüphesiz her güçlükle beraber bir kolaylık vardır.",
             source: "İnşirah Suresi, 6. Ayet"
         },
         {
             type: "Ayet-i Kerime",
+            sura: 52, ayah: 48,
             arabic: "وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا",
             meaning: "Rabbinin hükmüne sabret. Çünkü sen gözümüzün önündesin.",
             source: "Tûr Suresi, 48. Ayet"
         },
         {
             type: "Ayet-i Kerime",
+            sura: 3, ayah: 173,
             arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
             meaning: "Allah bize yeter, O ne güzel vekildir.",
             source: "Âl-i İmrân Suresi, 173. Ayet"
         },
         {
             type: "Ayet-i Kerime",
+            sura: 2, ayah: 186,
             arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ",
             meaning: "Kullarım sana beni sorarlarsa şüphesiz ben yakınım. Dua edenin duasına icabet ederim.",
             source: "Bakara Suresi, 186. Ayet"
         },
         {
             type: "Ayet-i Kerime",
+            sura: 2, ayah: 153,
             arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
             meaning: "Şüphesiz Allah sabredenlerle beraberdir.",
             source: "Bakara Suresi, 153. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "وَقُلْ رَبِّ زِدْنِي عِلْمًا",
-            meaning: "De ki: 'Rabbim! İlmimi artır.'",
-            source: "Tâhâ Suresi, 114. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا",
-            meaning: "Kim Allah'a karşı gelmekten sakınırsa, Allah ona bir çıkış yolu ihsan eder.",
-            source: "Talâq Suresi, 2. Ayet"
         },
 
         // --- GÜNÜN DUALARI ---
         {
             type: "Günün Duası",
+            sura: 2, ayah: 201,
             arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
             meaning: "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru.",
             source: "Bakara Suresi, 201. Ayet"
         },
         {
             type: "Günün Duası",
+            sura: 20, ayah: 25,
             arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
             meaning: "Rabbim! Göğsümü genişlet, işimi kolaylaştır.",
             source: "Tâhâ Suresi, 25-26. Ayetler"
         },
         {
             type: "Günün Duası",
+            sura: 21, ayah: 87,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
             meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
@@ -544,27 +543,24 @@
         // --- HADİS-İ ŞERİFLER ---
         {
             type: "Hadis-i Şerif",
+            sura: null, ayah: null,
             arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
             meaning: "Ameller ancak niyetlere göredir.",
             source: "Buhârî, Bed'ü'l-vahy, 1"
         },
         {
             type: "Hadis-i Şerif",
+            sura: null, ayah: null,
             arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
             meaning: "Din kardeşine tebessüm etmen senin için bir sadakadır.",
             source: "Tirmizî, Birr, 36"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
-            meaning: "Güzel söz sadakadır.",
-            source: "Buhârî, Cihâd, 128"
         }
     ];
 
     let currentIndex = -1;
     let toastTimeout = null;
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let currentAudio = null; // Gerçek ses oynatıcı
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
@@ -603,7 +599,7 @@
     }
 
     function renderContent(index) {
-        stopAudio();
+        stopAllAudio();
         currentIndex = index;
         const item = database[currentIndex];
 
@@ -693,21 +689,75 @@
         openFavoritesModal();
     }
 
-    // --- SESLİ OKUMA (SPEECH SYNTHESIS) ---
-    function stopAudio() {
+    // --- SES OKUMA VE HAFIZ TİLAVETİ ---
+    function stopAllAudio() {
+        // Gerçek MP3 Sesini Durdur
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio = null;
+        }
+        // Tarayıcı Sesini Durdur
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            document.getElementById('btn-audio-ar').innerText = "🔊 Arapça Okunuş";
-            document.getElementById('btn-audio-tr').innerText = "🔊 Türkçe Meali";
         }
+
+        document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça)";
+        document.getElementById('btn-audio-tr').innerText = "🔊 Türkçe Meali";
     }
 
-    function speakArabic() {
-        speakText(database[currentIndex].arabic, 'ar-SA', 'btn-audio-ar', "🔊 Arapça Okunuş");
+    // EveryAyah MP3 Ses Servisi (Mişari Raşid el-Afasi)
+    function playTilavet() {
+        const item = database[currentIndex];
+        const btn = document.getElementById('btn-audio-ar');
+
+        // Çalan ses varsa durdur
+        if (currentAudio && !currentAudio.paused) {
+            stopAllAudio();
+            return;
+        }
+
+        stopAllAudio();
+
+        if (!item.sura || !item.ayah) {
+            // Hadis ise TTS kullanarak Arapça okur
+            speakText(item.arabic, 'ar-SA', 'btn-audio-ar', "🎙️ Hafız Tilaveti (Arapça)");
+            return;
+        }
+
+        // Sure ve Ayet numarasını 3 haneli formata çevir (Örn: Suresi 2 -> 002, Ayet 152 -> 152)
+        const suraStr = String(item.sura).padStart(3, '0');
+        const ayahStr = String(item.ayah).padStart(3, '0');
+        
+        // Mişari Raşid el-Afasi tilavet adresi
+        const audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
+
+        currentAudio = new Audio(audioUrl);
+        btn.innerText = "⌛ Yükleniyor...";
+
+        currentAudio.play().then(() => {
+            btn.innerText = "⏹ Durdur";
+        }).catch(err => {
+            btn.innerText = "🎙️ Hafız Tilaveti (Arapça)";
+            showToast("Ses yüklenemedi, internetinizi kontrol edin.");
+        });
+
+        currentAudio.onended = () => {
+            btn.innerText = "🎙️ Hafız Tilaveti (Arapça)";
+        };
     }
 
+    // Net Türkçe Ses Motoru
     function speakTurkish() {
-        speakText(database[currentIndex].meaning, 'tr-TR', 'btn-audio-tr', "🔊 Türkçe Meali");
+        const item = database[currentIndex];
+        const btn = document.getElementById('btn-audio-tr');
+
+        if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+            stopAllAudio();
+            return;
+        }
+
+        stopAllAudio();
+        speakText(item.meaning, 'tr-TR', 'btn-audio-tr', "🔊 Türkçe Meali");
     }
 
     function speakText(text, lang, btnId, originalText) {
@@ -717,16 +767,16 @@
         }
 
         const btn = document.getElementById(btnId);
-
-        if (window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-            btn.innerText = originalText;
-            return;
-        }
-
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
-        utterance.rate = 0.85; // Anlaşılır okuma temposu
+        utterance.rate = 0.9;
+
+        // Tarayıcıdaki en net sesi seç
+        const voices = window.speechSynthesis.getVoices();
+        const bestVoice = voices.find(v => v.lang.startsWith(lang.substring(0, 2)) && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Enhanced')));
+        if (bestVoice) {
+            utterance.voice = bestVoice;
+        }
 
         utterance.onstart = () => {
             btn.innerText = "⏹ Durdur";
@@ -738,7 +788,6 @@
 
         utterance.onerror = () => {
             btn.innerText = originalText;
-            showToast("Ses oynatılırken sorun oluştu.");
         };
 
         window.speechSynthesis.speak(utterance);
