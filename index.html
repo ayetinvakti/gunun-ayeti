@@ -4,14 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Günün Ayeti ve Duası | Ayetin Vakti</title>
+
     <!-- Sosyal Medya & Mesajlaşma Önizleme Etiketleri -->
     <meta property="og:title" content="Günün Ayeti & Duası | Ayetin Vakti">
     <meta property="og:description" content="Her gün yeni bir feyz ve ilham. Ayet, hadis ve duaları keşfedin ve paylaşın.">
     <meta property="og:type" content="website">
+
+    <!-- Arapça Font Desteği -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
     <style>
-        button {
-            touch-action: manipulation;
-        }
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -89,12 +93,13 @@
         }
 
         .arabic-text {
-            font-size: 1.35rem;
+            font-size: 1.6rem;
             text-align: right;
-            line-height: 1.8;
+            line-height: 2.2;
             color: #e2e8f0;
-            font-family: 'Traditional Arabic', 'Naskh', serif;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
             margin-top: 5px;
+            direction: rtl;
         }
 
         .meaning-text {
@@ -133,6 +138,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            touch-action: manipulation;
             transition: all 0.2s ease;
         }
 
@@ -162,6 +168,7 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
+            z-index: 1000;
         }
 
         .toast.show {
@@ -444,7 +451,7 @@
         {
             type: "Hadis-i Şerif",
             arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
-            meaning: "Allah'a ve ahiret gününe iman eden ya hayır söylesin ya da bussun.",
+            meaning: "Allah'a ve ahiret gününe iman eden ya hayır söylesin ya da sussun.",
             source: "Buhârî, Edeb, 31"
         },
         {
@@ -467,7 +474,7 @@
         },
         {
             type: "Hadis-i Şerif",
-            arabic: "لاَ يََرْحَمُ اللَّهُ مَنْ لاَ يََرْحَمُ النَّاسَ",
+            arabic: "لاَ يَرْحَمُ اللَّهُ مَنْ لاَ يَرْحَمُ النَّاسَ",
             meaning: "İnsanlara merhamet etmeyene Allah da merhamet etmez.",
             source: "Buhârî, Edeb, 18"
         },
@@ -493,13 +500,20 @@
 
     let currentIndex = -1;
 
-    function getRandomContent() {
-        let newIndex;
-        do {
-            newIndex = Math.floor(Math.random() * database.length);
-        } while (newIndex === currentIndex && database.length > 1);
+    // Günün tarihine göre değişmeyen index üretir
+    function getDailyIndex() {
+        const today = new Date();
+        const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
         
-        currentIndex = newIndex;
+        let hash = 0;
+        for (let i = 0; i < dateString.length; i++) {
+            hash = dateString.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return Math.abs(hash) % database.length;
+    }
+
+    function renderContent(index) {
+        currentIndex = index;
         const item = database[currentIndex];
 
         document.getElementById('type-badge').innerText = item.type;
@@ -508,13 +522,40 @@
         document.getElementById('source-content').innerText = `— ${item.source}`;
     }
 
+    function getRandomContent() {
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * database.length);
+        } while (newIndex === currentIndex && database.length > 1);
+        
+        renderContent(newIndex);
+    }
+
     function copyContent() {
         const item = database[currentIndex];
         const textToCopy = `${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\nAyetin Vakti projesinden paylaşıldı.`;
 
-        navigator.clipboard.writeText(textToCopy).then(() => {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast("Metin kopyalandı!");
+            }).catch(() => fallbackCopy(textToCopy));
+        } else {
+            fallbackCopy(textToCopy);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
             showToast("Metin kopyalandı!");
-        });
+        } catch (err) {
+            showToast("Kopyalama başarısız oldu.");
+        }
+        document.body.removeChild(textArea);
     }
 
     function shareContent() {
@@ -541,8 +582,8 @@
         }, 2000);
     }
 
-    // Sayfa açıldığında ilk içeriği getir
-    getRandomContent();
+    // Sayfa açıldığında günün içeriğini yükle
+    renderContent(getDailyIndex());
 </script>
 
 </body>
