@@ -428,8 +428,8 @@
         </div>
 
         <div class="audio-actions">
-            <button class="audio-btn" id="btn-audio-ar" onclick="playTilavet('ar')">🎙️ Hafız Tilaveti (Arapça)</button>
-            <button class="audio-btn" id="btn-audio-tr" onclick="playTilavet('tr')">🔊 Sesli Meal (Türkçe)</button>
+            <button class="audio-btn" id="btn-audio-ar" onclick="playArabic()">🎙️ Hafız Tilaveti (Arapça)</button>
+            <button class="audio-btn" id="btn-audio-tr" onclick="playTurkish()">🔊 Sesli Meal (Türkçe)</button>
         </div>
 
         <div class="actions">
@@ -496,7 +496,7 @@
         {
             type: "Ayet-i Kerime",
             sura: 2, ayah: 186,
-            arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ",
+            arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دعانِ",
             meaning: "Kullarım sana beni sorarlarsa şüphesiz ben yakınım. Dua edenin duasına icabet ederim.",
             source: "Bakara Suresi, 186. Ayet"
         },
@@ -548,7 +548,7 @@
     let toastTimeout = null;
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     let currentAudio = null;
-    let activeLang = null;
+    let activeType = null; // 'ar' veya 'tr'
 
     function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -668,25 +668,25 @@
         openFavoritesModal();
     }
 
-    // --- GERÇEK SES (MP3) ÇALMA SİSTEMİ ---
+    // --- SES OKUMA SİSTEMİ (GÜVENLİ & YEDEK MOTORLU) ---
     function stopAllAudio() {
         if (currentAudio) {
             currentAudio.pause();
             currentAudio = null;
         }
-        activeLang = null;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        activeType = null;
         document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça)";
         document.getElementById('btn-audio-tr').innerText = "🔊 Sesli Meal (Türkçe)";
     }
 
-    function playTilavet(lang) {
+    function playArabic() {
         const item = database[currentIndex];
-        const btnId = lang === 'ar' ? 'btn-audio-ar' : 'btn-audio-tr';
-        const btn = document.getElementById(btnId);
-        const defaultText = lang === 'ar' ? "🎙️ Hafız Tilaveti (Arapça)" : "🔊 Sesli Meal (Türkçe)";
+        const btn = document.getElementById('btn-audio-ar');
 
-        // Çalan sesi durdurma kontrolü
-        if (currentAudio && !currentAudio.paused && activeLang === lang) {
+        if (activeType === 'ar') {
             stopAllAudio();
             return;
         }
@@ -694,38 +694,110 @@
         stopAllAudio();
 
         if (!item.sura || !item.ayah) {
-            showToast("Hadis-i Şerifler için sesli okuma mevcut değildir.");
+            showToast("Hadis-i Şerifler için ses seçeneği kısıtlıdır.");
             return;
         }
 
-        let audioUrl = "";
-
-        if (lang === 'ar') {
-            // Arapça Hafız Kaydı (Mişari Raşid el-Afasi - EveryAyah)
-            const suraStr = String(item.sura).padStart(3, '0');
-            const ayahStr = String(item.ayah).padStart(3, '0');
-            audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
-        } else {
-            // Türkçe Profesyonel Meal Kaydı (AcikKuran CDN)
-            audioUrl = `https://cdn.acikkuran.com/audios/verses/${item.sura}/${item.ayah}/tr.mp3`;
-        }
-
-        activeLang = lang;
-        currentAudio = new Audio(audioUrl);
+        activeType = 'ar';
         btn.innerText = "⌛ Yükleniyor...";
+
+        const suraStr = String(item.sura).padStart(3, '0');
+        const ayahStr = String(item.ayah).padStart(3, '0');
+        const audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
+
+        currentAudio = new Audio(audioUrl);
 
         currentAudio.play().then(() => {
             btn.innerText = "⏹ Durdur";
-        }).catch(err => {
-            btn.innerText = defaultText;
-            activeLang = null;
-            showToast("Ses dosyası yüklenemedi, bağlantınızı kontrol edin.");
+        }).catch(() => {
+            stopAllAudio();
+            showToast("Arapça ses yüklenemedi.");
         });
 
         currentAudio.onended = () => {
-            btn.innerText = defaultText;
-            activeLang = null;
+            stopAllAudio();
         };
+    }
+
+    function playTurkish() {
+        const item = database[currentIndex];
+        const btn = document.getElementById('btn-audio-tr');
+
+        if (activeType === 'tr') {
+            stopAllAudio();
+            return;
+        }
+
+        stopAllAudio();
+        activeType = 'tr';
+        btn.innerText = "⌛ Yükleniyor...";
+
+        if (!item.sura || !item.ayah) {
+            // Hadis veya Genel Metin ise Direkt TTS ile Okur
+            speakTTS(item.meaning, 'tr-TR', btn, "🔊 Sesli Meal (Türkçe)");
+            return;
+        }
+
+        // 1. DENE: MP3 Ses Sunucusu
+        const audioUrl = `https://cdn.acikkuran.com/audios/verses/${item.sura}/${item.ayah}/tr.mp3`;
+        let isLoaded = false;
+
+        currentAudio = new Audio(audioUrl);
+
+        // 3 saniye içinde açılmazsa TTS'e devret (Timeout Koruması)
+        const loadTimeout = setTimeout(() => {
+            if (!isLoaded) {
+                if (currentAudio) currentAudio.pause();
+                speakTTS(item.meaning, 'tr-TR', btn, "🔊 Sesli Meal (Türkçe)");
+            }
+        }, 3000);
+
+        currentAudio.play().then(() => {
+            isLoaded = true;
+            clearTimeout(loadTimeout);
+            btn.innerText = "⏹ Durdur";
+        }).catch(() => {
+            isLoaded = true;
+            clearTimeout(loadTimeout);
+            // MP3 Hata verirse anında TTS (Tarayıcı Sesi) Devreye Girer
+            speakTTS(item.meaning, 'tr-TR', btn, "🔊 Sesli Meal (Türkçe)");
+        });
+
+        currentAudio.onended = () => {
+            stopAllAudio();
+        };
+    }
+
+    // Yedek Tarayıcı Ses Motoru (Türkçe Okuma)
+    function speakTTS(text, lang, btn, defaultText) {
+        if (!('speechSynthesis' in window)) {
+            stopAllAudio();
+            showToast("Cihazınızda ses motoru bulunamadı.");
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+
+        const voices = window.speechSynthesis.getVoices();
+        const bestVoice = voices.find(v => v.lang.startsWith('tr') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Enhanced')));
+        if (bestVoice) utterance.voice = bestVoice;
+
+        utterance.onstart = () => {
+            btn.innerText = "⏹ Durdur";
+        };
+
+        utterance.onend = () => {
+            stopAllAudio();
+        };
+
+        utterance.onerror = () => {
+            stopAllAudio();
+            showToast("Ses oynatılamadı.");
+        };
+
+        window.speechSynthesis.speak(utterance);
     }
 
     function copyContent() {
