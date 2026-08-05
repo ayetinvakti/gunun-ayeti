@@ -28,6 +28,7 @@
             --btn-hover: rgba(255, 255, 255, 0.1);
             --arabic-color: #e2e8f0;
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --modal-bg: #1e293b;
         }
 
         /* Gündüz Teması (Açık Mode) */
@@ -42,6 +43,7 @@
             --btn-hover: #e2e8f0;
             --arabic-color: #1e293b;
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --modal-bg: #ffffff;
         }
 
         * {
@@ -81,27 +83,36 @@
             padding-top: 10px;
         }
 
-        .theme-toggle-btn {
+        .top-nav {
             position: absolute;
             right: 0;
             top: 0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .top-btn {
             background-color: var(--btn-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
+        }
+
+        .top-btn:hover {
+            background-color: var(--btn-hover);
         }
 
         .header h1 {
             font-size: 1.8rem;
             color: var(--accent-color);
-            margin-top: 20px;
+            margin-top: 35px;
             margin-bottom: 6px;
             text-align: center;
         }
@@ -122,10 +133,17 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            position: relative;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         .badge {
-            align-self: flex-start;
             background-color: rgba(16, 185, 129, 0.15);
             color: var(--accent-color);
             padding: 4px 12px;
@@ -134,6 +152,23 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .fav-icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .fav-icon-btn.active {
+            color: #f59e0b;
+        }
+
+        .fav-icon-btn:hover {
+            transform: scale(1.15);
         }
 
         .arabic-text {
@@ -158,6 +193,33 @@
             color: var(--text-muted);
             text-align: right;
             font-weight: 600;
+        }
+
+        .audio-actions {
+            display: flex;
+            gap: 8px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+
+        .audio-btn {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--btn-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .audio-btn:hover {
+            background-color: var(--btn-hover);
         }
 
         .actions {
@@ -198,6 +260,121 @@
             opacity: 0.9;
         }
 
+        /* FAVORİLER MODALI */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background-color: var(--modal-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .fav-item {
+            background-color: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .fav-item:hover {
+            background-color: var(--btn-hover);
+        }
+
+        .fav-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .fav-info strong {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+        }
+
+        .fav-info span {
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .delete-fav-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px 0;
+            font-size: 0.95rem;
+        }
+
         .toast {
             position: fixed;
             bottom: 20px;
@@ -210,7 +387,7 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
-            z-index: 1000;
+            z-index: 3000;
         }
 
         .toast.show {
@@ -228,15 +405,19 @@
 
 <div class="container">
     <div class="header">
-        <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">
-            ☀️ Gündüz
-        </button>
+        <div class="top-nav">
+            <button class="top-btn" onclick="openFavoritesModal()">⭐ Favorilerim</button>
+            <button class="top-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">☀️ Gündüz</button>
+        </div>
         <h1>Günün Ayeti & Duası</h1>
         <p>Her gün yeni bir feyz ve ilham</p>
     </div>
 
     <div class="card">
-        <span class="badge" id="type-badge">Yükleniyor...</span>
+        <div class="card-top">
+            <span class="badge" id="type-badge">Yükleniyor...</span>
+            <button class="fav-icon-btn" id="fav-btn" onclick="toggleFavorite()" title="Favorilere Ekle">★</button>
+        </div>
         
         <div class="arabic-text" id="arabic-content" lang="ar">
             ...
@@ -248,6 +429,11 @@
 
         <div class="source-text" id="source-content">
             —
+        </div>
+
+        <div class="audio-actions">
+            <button class="audio-btn" id="btn-audio-ar" onclick="speakArabic()">🔊 Arapça Okunuş</button>
+            <button class="audio-btn" id="btn-audio-tr" onclick="speakTurkish()">🔊 Türkçe Meali</button>
         </div>
 
         <div class="actions">
@@ -262,7 +448,20 @@
     </div>
 </div>
 
-<div class="toast" id="toast" role="alert" aria-live="polite">Metin kopyalandı!</div>
+<!-- Favoriler Modalı -->
+<div class="modal-overlay" id="fav-modal" onclick="closeFavoritesModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h2>⭐ Favori İçeriklerim</h2>
+            <button class="close-btn" onclick="closeFavoritesModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="fav-list">
+            <!-- Favori öğeleri buraya yüklenecek -->
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite">İşlem tamamlandı!</div>
 
 <script>
     const database = [
@@ -321,54 +520,6 @@
             meaning: "Kim Allah'a karşı gelmekten sakınırsa, Allah ona bir çıkış yolu ihsan eder.",
             source: "Talâq Suresi, 2. Ayet"
         },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "وَاللَّهُ يَعْلَمُ وَأَنْتُمْ لَا تَعْلَمُونَ",
-            meaning: "Allah bilir, siz bilmezsiniz.",
-            source: "Bakara Suresi, 216. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "إِنَّ اللَّهَ يَقْضِي بِالْحَقِّ",
-            meaning: "Şüphesiz Allah hak ile hükmeder.",
-            source: "Mü'min Suresi, 20. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "وَهُوَ مَعَكُمْ أَيْنَ مَا كُنْتُمْ",
-            meaning: "Nerede olursanız olun O sizinle beraberdir.",
-            source: "Hadîd Suresi, 4. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "قُلْ لَنْ يُصِيبَنَا إِلَّا مَا كَتَبَ اللَّهُ لَنَا",
-            meaning: "De ki: Allah’ın bizim için yazdığından başkası bize asla erişmez.",
-            source: "Tevbe Suresi, 51. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "وَلَا تَهِنُوا وَلَا تَحْزَنُوا وَأَنْتُمُ الْأَعْلَوْنَ إِنْ كُنْتُمْ مُؤْمِنِينَ",
-            meaning: "Gevşemeyin, hüzünlenmeyin. Eğer inanıyorsanız üstün olan sizsiniz.",
-            source: "Âl-i İmrân Suresi, 139. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "وَأُفَوِّضُ أَمْرِي إِلَى اللَّهِ ۚ إِنَّ اللَّهَ بَصِيرٌ بِالْعِبَادِ",
-            meaning: "Ben işimi Allah'a havale ediyorum. Şüphesiz Allah, kullarını çok iyi görendir.",
-            source: "Mü'min Suresi, 44. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "وَتَوَكَّلْ عَلَى الْحَيِّ الَّذِي لَا يَمُوتُ",
-            meaning: "Ölümsüz ve daima diri olan Allah'a güvenip dayan.",
-            source: "Furkân Suresi, 58. Ayet"
-        },
-        {
-            type: "Ayet-i Kerime",
-            arabic: "إِنَّ رَبِّي قَرِيبٌ مُجِيبٌ",
-            meaning: "Şüphesiz benim Rabbim yakındır, duaları kabul edendir.",
-            source: "Hûd Suresi, 61. Ayet"
-        },
 
         // --- GÜNÜN DUALARI ---
         {
@@ -385,69 +536,9 @@
         },
         {
             type: "Günün Duası",
-            arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً",
-            meaning: "Rabbimiz! Bizi doğru yola ilettikten sonra kalplerimizi eğriltme. Bize katından bir rahmet lütfet.",
-            source: "Âl-i İmrân Suresi, 8. Ayet"
-        },
-        {
-            type: "Günün Duası",
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
             meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "رَبِّ إنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
-            meaning: "Rabbim! Bana indireceğin her hayra muhtacım.",
-            source: "Kasas Suresi, 24. Ayet (Hz. Musa'nın Duası)"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
-            meaning: "Rabbimiz! Hesap görülecek günde beni, ana-babamı ve müminleri bağışla.",
-            source: "İbrâhîm Suresi, 41. Ayet"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
-            meaning: "Allah'ım! Sen affedicisin, affetmeyi seversin, beni de affet.",
-            source: "Tirmizî, Deavât, 84"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "رَبِّ هَبْ لِي مِنَ الصَّالِحِينَ",
-            meaning: "Rabbim! Bana salihlerden olacak bir evlat bağışla.",
-            source: "Sâffât Suresi, 100. Ayet"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ",
-            meaning: "Rabbimiz! Bize eşlerimizden ve soyumuzdan göz aydınlığı olacak nesiller bağışla.",
-            source: "Furkân Suresi, 74. Ayet"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
-            meaning: "Allah'ım! Seni anıp zikretmek, sana şükretmek ve sana güzelce ibadet etmek için bana yardım et.",
-            source: "Ebu Davud, Vitir, 26"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ",
-            meaning: "Ey kalpleri evirip çeviren Allah'ım! Kalbimi dinin üzere sabit kıl.",
-            source: "Tirmizî, Deavât, 89"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى",
-            meaning: "Allah'ım! Senden hidayet, takva, iffet ve gönül zenginliği istiyorum.",
-            source: "Müslim, Zikir, 72"
-        },
-        {
-            type: "Günün Duası",
-            arabic: "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ",
-            meaning: "Rabbim! Bana ve ana-babama verdiğin nimete şükretmemi bana ilham et.",
-            source: "Naml Suresi, 19. Ayet"
         },
 
         // --- HADİS-İ ŞERİFLER ---
@@ -459,92 +550,21 @@
         },
         {
             type: "Hadis-i Şerif",
-            arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
-            meaning: "Sizin en hayırlınız Kur'an'ı öğrenen ve öğretendir.",
-            source: "Buhârî, Fezâilü'l-Kur'ân, 21"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "الدُّعَاءُ هُوَ الْعِبَادَةُ",
-            meaning: "Dua ibadetin ta kendisidir.",
-            source: "Tirmizî, Deavât, 1"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ",
-            meaning: "Müslüman, diğer Müslümanların elinden ve dilinden güvende olduğu kimsedir.",
-            source: "Buhârî, Îmân, 4"
-        },
-        {
-            type: "Hadis-i Şerif",
             arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
             meaning: "Din kardeşine tebessüm etmen senin için bir sadakadır.",
             source: "Tirmizî, Birr, 36"
         },
         {
             type: "Hadis-i Şerif",
-            arabic: "لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
-            meaning: "Sizden biriniz kendisi için istediğini kardeşi için de istemedikçe tam iman etmiş olmaz.",
-            source: "Buhârî, Îmân, 7"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "الطُّهُورُ شَطْرُ الإِيمَانِ",
-            meaning: "Temizlik imanın yarısıdır.",
-            source: "Müslim, Tahâret, 1"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
-            meaning: "Allah'a ve ahiret gününe iman eden ya hayır söylesin ya da sussun.",
-            source: "Buhârî, Edeb, 31"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ",
-            meaning: "Allah katında amellerin en makbulü, az da olsa devamlı olanıdır.",
-            source: "Müslim, Musâfirîn, 218"
-        },
-        {
-            type: "Hadis-i Şerif",
             arabic: "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
             meaning: "Güzel söz sadakadır.",
             source: "Buhârî, Cihâd, 128"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "إِنَّ اللَّهَ رَفِيقٌ يُحِبُّ الرِّفْقَ",
-            meaning: "Şüphesiz Allah nezaket sahibidir ve nezaketi/yumuşak huyluluğu sever.",
-            source: "Müslim, Birr, 77"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "لاَ يَرْحَمُ اللَّهُ مَنْ لاَ يَرْحَمُ النَّاسَ",
-            meaning: "İnsanlara merhamet etmeyene Allah da merhamet etmez.",
-            source: "Buhârî, Edeb, 18"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "الْيَدُ الْعُلْيَا خَيْرٌ مِنَ الْيَدِ السُّفْلَى",
-            meaning: "Veren el, alan elden üstündür.",
-            source: "Buhârî, Zekât, 18"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ",
-            meaning: "Nerede olursan ol Allah'a karşı gelmekten sakın.",
-            source: "Tirmizî, Birr, 55"
-        },
-        {
-            type: "Hadis-i Şerif",
-            arabic: "الدَّالُّ عَلَى الْخَيْرِ كَفَاعِلِهِ",
-            meaning: "Hayra vesile olan, onu yapan gibidir.",
-            source: "Tirmizî, İlim, 14"
         }
     ];
 
     let currentIndex = -1;
     let toastTimeout = null;
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
@@ -554,8 +574,7 @@
 
     function toggleTheme() {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const newTheme = isLight ? 'dark' : 'light';
-        applyTheme(newTheme);
+        applyTheme(isLight ? 'dark' : 'light');
     }
 
     function applyTheme(theme) {
@@ -584,6 +603,7 @@
     }
 
     function renderContent(index) {
+        stopAudio();
         currentIndex = index;
         const item = database[currentIndex];
 
@@ -591,6 +611,8 @@
         document.getElementById('arabic-content').innerText = item.arabic;
         document.getElementById('meaning-content').innerText = `"${item.meaning}"`;
         document.getElementById('source-content').innerText = `— ${item.source}`;
+
+        updateFavIcon();
     }
 
     function getRandomContent() {
@@ -602,6 +624,127 @@
         renderContent(newIndex);
     }
 
+    // --- FAVORİ YÖNETİMİ ---
+    function updateFavIcon() {
+        const favBtn = document.getElementById('fav-btn');
+        const isFav = favorites.includes(currentIndex);
+        if (isFav) {
+            favBtn.classList.add('active');
+            favBtn.innerText = '★';
+        } else {
+            favBtn.classList.remove('active');
+            favBtn.innerText = '☆';
+        }
+    }
+
+    function toggleFavorite() {
+        const favIndex = favorites.indexOf(currentIndex);
+        if (favIndex > -1) {
+            favorites.splice(favIndex, 1);
+            showToast("Favorilerden çıkarıldı.");
+        } else {
+            favorites.push(currentIndex);
+            showToast("Favorilere eklendi!");
+        }
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavIcon();
+    }
+
+    function openFavoritesModal() {
+        const favList = document.getElementById('fav-list');
+        favList.innerHTML = '';
+
+        if (favorites.length === 0) {
+            favList.innerHTML = '<div class="empty-msg">Henüz favorilere eklenmiş bir içerik yok.</div>';
+        } else {
+            favorites.forEach(idx => {
+                const item = database[idx];
+                const div = document.createElement('div');
+                div.className = 'fav-item';
+                div.innerHTML = `
+                    <div class="fav-info" onclick="selectFromFav(${idx})">
+                        <strong>${item.type}</strong>
+                        <span>${item.meaning}</span>
+                    </div>
+                    <button class="delete-fav-btn" onclick="removeFavorite(event, ${idx})">🗑️</button>
+                `;
+                favList.appendChild(div);
+            });
+        }
+        document.getElementById('fav-modal').classList.add('open');
+    }
+
+    function closeFavoritesModal(e) {
+        if (!e || e.target.id === 'fav-modal' || e.target.className === 'close-btn') {
+            document.getElementById('fav-modal').classList.remove('open');
+        }
+    }
+
+    function selectFromFav(index) {
+        renderContent(index);
+        closeFavoritesModal();
+    }
+
+    function removeFavorite(e, index) {
+        e.stopPropagation();
+        favorites = favorites.filter(id => id !== index);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavIcon();
+        openFavoritesModal();
+    }
+
+    // --- SESLİ OKUMA (SPEECH SYNTHESIS) ---
+    function stopAudio() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            document.getElementById('btn-audio-ar').innerText = "🔊 Arapça Okunuş";
+            document.getElementById('btn-audio-tr').innerText = "🔊 Türkçe Meali";
+        }
+    }
+
+    function speakArabic() {
+        speakText(database[currentIndex].arabic, 'ar-SA', 'btn-audio-ar', "🔊 Arapça Okunuş");
+    }
+
+    function speakTurkish() {
+        speakText(database[currentIndex].meaning, 'tr-TR', 'btn-audio-tr', "🔊 Türkçe Meali");
+    }
+
+    function speakText(text, lang, btnId, originalText) {
+        if (!('speechSynthesis' in window)) {
+            showToast("Cihazınız sesli okumayı desteklemiyor.");
+            return;
+        }
+
+        const btn = document.getElementById(btnId);
+
+        if (window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            btn.innerText = originalText;
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = lang;
+        utterance.rate = 0.85; // Anlaşılır okuma temposu
+
+        utterance.onstart = () => {
+            btn.innerText = "⏹ Durdur";
+        };
+
+        utterance.onend = () => {
+            btn.innerText = originalText;
+        };
+
+        utterance.onerror = () => {
+            btn.innerText = originalText;
+            showToast("Ses oynatılırken sorun oluştu.");
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // --- KOPYALAMA VE PAYLAŞMA ---
     function copyContent() {
         const item = database[currentIndex];
         const textToCopy = `${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\nAyetin Vakti projesinden paylaşıldı.`;
@@ -656,7 +799,7 @@
         }, 2000);
     }
 
-    // İlk açılış
+    // İlk Yükleme
     initTheme();
     renderContent(getDailyIndex());
 </script>
