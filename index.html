@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Günün Ayeti ve Duası | Ayetin Vakti</title>
 
     <!-- Sosyal Medya & Mesajlaşma Önizleme Etiketleri -->
@@ -71,7 +71,6 @@
             align-items: center;
         }
 
-        /* Çakışmayı Önleyen Esnek Header Yapısı */
         .header {
             width: 100%;
             display: flex;
@@ -102,7 +101,7 @@
         .header h1 {
             font-size: 1.8rem;
             color: var(--accent-color);
-            margin-top: 20px; /* Butonla çakışmaması için verilen boşluk */
+            margin-top: 20px;
             margin-bottom: 6px;
             text-align: center;
         }
@@ -113,7 +112,6 @@
             text-align: center;
         }
 
-        /* Kart Alanı */
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -162,7 +160,6 @@
             font-weight: 600;
         }
 
-        /* Eylem Butonları */
         .actions {
             display: flex;
             gap: 10px;
@@ -231,7 +228,7 @@
 
 <div class="container">
     <div class="header">
-        <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">
             ☀️ Gündüz
         </button>
         <h1>Günün Ayeti & Duası</h1>
@@ -241,7 +238,7 @@
     <div class="card">
         <span class="badge" id="type-badge">Yükleniyor...</span>
         
-        <div class="arabic-text" id="arabic-content">
+        <div class="arabic-text" id="arabic-content" lang="ar">
             ...
         </div>
 
@@ -265,7 +262,7 @@
     </div>
 </div>
 
-<div class="toast" id="toast">Metin kopyalandı!</div>
+<div class="toast" id="toast" role="alert" aria-live="polite">Metin kopyalandı!</div>
 
 <script>
     const database = [
@@ -547,6 +544,7 @@
     ];
 
     let currentIndex = -1;
+    let toastTimeout = null;
 
     // --- TEMA YÖNETİMİ ---
     function initTheme() {
@@ -650,12 +648,15 @@
         const toast = document.getElementById('toast');
         toast.innerText = message;
         toast.classList.add('show');
-        setTimeout(() => {
+        
+        if (toastTimeout) clearTimeout(toastTimeout);
+        
+        toastTimeout = setTimeout(() => {
             toast.classList.remove('show');
         }, 2000);
     }
 
-    // İlk açılış işlemleri
+    // İlk açılış
     initTheme();
     renderContent(getDailyIndex());
 </script>
