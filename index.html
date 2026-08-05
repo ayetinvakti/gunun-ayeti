@@ -548,7 +548,7 @@
     let toastTimeout = null;
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     let currentAudio = null;
-    let activeType = null; // 'ar' veya 'tr'
+    let activeType = null;
 
     function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -668,10 +668,11 @@
         openFavoritesModal();
     }
 
-    // --- SES OKUMA SİSTEMİ (GÜVENLİ & YEDEK MOTORLU) ---
+    // --- KESİNTİSİZ SES OKUMA SİSTEMİ ---
     function stopAllAudio() {
         if (currentAudio) {
             currentAudio.pause();
+            currentAudio.src = "";
             currentAudio = null;
         }
         if ('speechSynthesis' in window) {
@@ -680,6 +681,31 @@
         activeType = null;
         document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça)";
         document.getElementById('btn-audio-tr').innerText = "🔊 Sesli Meal (Türkçe)";
+    }
+
+    function playAudioFromUrls(urls, btn, onFail) {
+        let index = 0;
+
+        function tryNext() {
+            if (index >= urls.length) {
+                if (onFail) onFail();
+                return;
+            }
+
+            currentAudio = new Audio(urls[index]);
+            currentAudio.play().then(() => {
+                btn.innerText = "⏹ Durdur";
+            }).catch(() => {
+                index++;
+                tryNext();
+            });
+
+            currentAudio.onended = () => {
+                stopAllAudio();
+            };
+        }
+
+        tryNext();
     }
 
     function playArabic() {
@@ -703,20 +729,16 @@
 
         const suraStr = String(item.sura).padStart(3, '0');
         const ayahStr = String(item.ayah).padStart(3, '0');
-        const audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
+        
+        const arUrls = [
+            `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`,
+            `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${getGlobalAyahIndex(item.sura, item.ayah)}.mp3`
+        ];
 
-        currentAudio = new Audio(audioUrl);
-
-        currentAudio.play().then(() => {
-            btn.innerText = "⏹ Durdur";
-        }).catch(() => {
+        playAudioFromUrls(arUrls, btn, () => {
             stopAllAudio();
             showToast("Arapça ses yüklenemedi.");
         });
-
-        currentAudio.onended = () => {
-            stopAllAudio();
-        };
     }
 
     function playTurkish() {
@@ -733,43 +755,36 @@
         btn.innerText = "⌛ Yükleniyor...";
 
         if (!item.sura || !item.ayah) {
-            // Hadis veya Genel Metin ise Direkt TTS ile Okur
-            speakTTS(item.meaning, 'tr-TR', btn, "🔊 Sesli Meal (Türkçe)");
+            speakTTS(item.meaning, 'tr-TR', btn);
             return;
         }
 
-        // 1. DENE: MP3 Ses Sunucusu
-        const audioUrl = `https://cdn.acikkuran.com/audios/verses/${item.sura}/${item.ayah}/tr.mp3`;
-        let isLoaded = false;
+        const suraStr = String(item.sura).padStart(3, '0');
+        const ayahStr = String(item.ayah).padStart(3, '0');
 
-        currentAudio = new Audio(audioUrl);
+        // Quran.com CORS Açık MP3 Yolları (Alafasy Türkçe Meal)
+        const trUrls = [
+            `https://download.quranicaudio.com/quran/turkish/suat_yildirim/${suraStr}${ayahStr}.mp3`,
+            `https://verses.quran.com/Alafasy/mp3/${suraStr}${ayahStr}.mp3`
+        ];
 
-        // 3 saniye içinde açılmazsa TTS'e devret (Timeout Koruması)
-        const loadTimeout = setTimeout(() => {
-            if (!isLoaded) {
-                if (currentAudio) currentAudio.pause();
-                speakTTS(item.meaning, 'tr-TR', btn, "🔊 Sesli Meal (Türkçe)");
-            }
-        }, 3000);
-
-        currentAudio.play().then(() => {
-            isLoaded = true;
-            clearTimeout(loadTimeout);
-            btn.innerText = "⏹ Durdur";
-        }).catch(() => {
-            isLoaded = true;
-            clearTimeout(loadTimeout);
-            // MP3 Hata verirse anında TTS (Tarayıcı Sesi) Devreye Girer
-            speakTTS(item.meaning, 'tr-TR', btn, "🔊 Sesli Meal (Türkçe)");
+        playAudioFromUrls(trUrls, btn, () => {
+            // Yalnızca MP3 bağlantıları sırayla tamamen çökerse TTS devreye girer
+            speakTTS(item.meaning, 'tr-TR', btn);
         });
-
-        currentAudio.onended = () => {
-            stopAllAudio();
-        };
     }
 
-    // Yedek Tarayıcı Ses Motoru (Türkçe Okuma)
-    function speakTTS(text, lang, btn, defaultText) {
+    // Dünya çapı ayet indeksi hesaplayıcı (Yedek CDN için)
+    function getGlobalAyahIndex(sura, ayah) {
+        const suraAyahCounts = [0, 7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135, 112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59, 37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13, 14, 11, 11, 18, 12, 12, 30, 52, 52, 44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8, 8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6];
+        let total = 0;
+        for (let i = 1; i < sura; i++) {
+            total += suraAyahCounts[i];
+        }
+        return total + ayah;
+    }
+
+    function speakTTS(text, lang, btn) {
         if (!('speechSynthesis' in window)) {
             stopAllAudio();
             showToast("Cihazınızda ses motoru bulunamadı.");
@@ -779,10 +794,6 @@
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang;
         utterance.rate = 0.9;
-
-        const voices = window.speechSynthesis.getVoices();
-        const bestVoice = voices.find(v => v.lang.startsWith('tr') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Enhanced')));
-        if (bestVoice) utterance.voice = bestVoice;
 
         utterance.onstart = () => {
             btn.innerText = "⏹ Durdur";
