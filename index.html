@@ -668,7 +668,7 @@
         openFavoritesModal();
     }
 
-    // --- KESİNTİSİZ SES OKUMA SİSTEMİ ---
+    // --- SES SİSTEMİ (QURAN.COM OFFICIAL API MİMARİSİ) ---
     function stopAllAudio() {
         if (currentAudio) {
             currentAudio.pause();
@@ -681,31 +681,6 @@
         activeType = null;
         document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça)";
         document.getElementById('btn-audio-tr').innerText = "🔊 Sesli Meal (Türkçe)";
-    }
-
-    function playAudioFromUrls(urls, btn, onFail) {
-        let index = 0;
-
-        function tryNext() {
-            if (index >= urls.length) {
-                if (onFail) onFail();
-                return;
-            }
-
-            currentAudio = new Audio(urls[index]);
-            currentAudio.play().then(() => {
-                btn.innerText = "⏹ Durdur";
-            }).catch(() => {
-                index++;
-                tryNext();
-            });
-
-            currentAudio.onended = () => {
-                stopAllAudio();
-            };
-        }
-
-        tryNext();
     }
 
     function playArabic() {
@@ -729,19 +704,23 @@
 
         const suraStr = String(item.sura).padStart(3, '0');
         const ayahStr = String(item.ayah).padStart(3, '0');
-        
-        const arUrls = [
-            `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`,
-            `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${getGlobalAyahIndex(item.sura, item.ayah)}.mp3`
-        ];
+        const audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
 
-        playAudioFromUrls(arUrls, btn, () => {
+        currentAudio = new Audio(audioUrl);
+
+        currentAudio.play().then(() => {
+            btn.innerText = "⏹ Durdur";
+        }).catch(() => {
             stopAllAudio();
             showToast("Arapça ses yüklenemedi.");
         });
+
+        currentAudio.onended = () => {
+            stopAllAudio();
+        };
     }
 
-    function playTurkish() {
+    async function playTurkish() {
         const item = database[currentIndex];
         const btn = document.getElementById('btn-audio-tr');
 
@@ -759,29 +738,41 @@
             return;
         }
 
-        const suraStr = String(item.sura).padStart(3, '0');
-        const ayahStr = String(item.ayah).padStart(3, '0');
+        try {
+            // Quran.com v4 API üzerinden dinamik Türkçe ses dosyasını çekiyoruz
+            // Reciter ID 11 / 12 (Alafasy Türkçe Meal / Hamdi Döndüren)
+            const response = await fetch(`https://api.quran.com/api/v4/recitations/12/by_ayah/${item.sura}:${item.ayah}`);
+            
+            if (!response.ok) throw new Error("API yanıt vermedi");
 
-        // Quran.com CORS Açık MP3 Yolları (Alafasy Türkçe Meal)
-        const trUrls = [
-            `https://download.quranicaudio.com/quran/turkish/suat_yildirim/${suraStr}${ayahStr}.mp3`,
-            `https://verses.quran.com/Alafasy/mp3/${suraStr}${ayahStr}.mp3`
-        ];
+            const data = await response.json();
+            
+            if (data.audio_files && data.audio_files.length > 0) {
+                let audioPath = data.audio_files[0].url;
+                
+                if (!audioPath.startsWith('http')) {
+                    audioPath = `https://audio.qurancdn.com/${audioPath}`;
+                }
 
-        playAudioFromUrls(trUrls, btn, () => {
-            // Yalnızca MP3 bağlantıları sırayla tamamen çökerse TTS devreye girer
+                currentAudio = new Audio(audioPath);
+
+                currentAudio.play().then(() => {
+                    btn.innerText = "⏹ Durdur";
+                }).catch(() => {
+                    // Tarayıcı kısıtlaması yaşanırsa TTS'e devret
+                    speakTTS(item.meaning, 'tr-TR', btn);
+                });
+
+                currentAudio.onended = () => {
+                    stopAllAudio();
+                };
+            } else {
+                speakTTS(item.meaning, 'tr-TR', btn);
+            }
+        } catch (err) {
+            // Sunucu isteği başarısız olursa kesintisiz şekilde TTS'e fallback yapar
             speakTTS(item.meaning, 'tr-TR', btn);
-        });
-    }
-
-    // Dünya çapı ayet indeksi hesaplayıcı (Yedek CDN için)
-    function getGlobalAyahIndex(sura, ayah) {
-        const suraAyahCounts = [0, 7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135, 112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59, 37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13, 14, 11, 11, 18, 12, 12, 30, 52, 52, 44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8, 8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6];
-        let total = 0;
-        for (let i = 1; i < sura; i++) {
-            total += suraAyahCounts[i];
         }
-        return total + ayah;
     }
 
     function speakTTS(text, lang, btn) {
