@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
+        /* Gece Teması (Varsayılan Koyu Mode) */
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -23,12 +24,31 @@
             --text-color: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --arabic-color: #e2e8f0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Gündüz Teması (Açık Mode) */
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --accent-color: #059669;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --btn-bg: #f1f5f9;
+            --btn-hover: #e2e8f0;
+            --arabic-color: #1e293b;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         body {
@@ -51,20 +71,46 @@
             align-items: center;
         }
 
+        /* Çakışmayı Önleyen Esnek Header Yapısı */
         .header {
-            text-align: center;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
             margin-bottom: 24px;
+            padding-top: 10px;
+        }
+
+        .theme-toggle-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background-color: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .header h1 {
             font-size: 1.8rem;
             color: var(--accent-color);
+            margin-top: 20px; /* Butonla çakışmaması için verilen boşluk */
             margin-bottom: 6px;
+            text-align: center;
         }
 
         .header p {
             color: var(--text-muted);
             font-size: 0.95rem;
+            text-align: center;
         }
 
         /* Kart Alanı */
@@ -74,7 +120,7 @@
             border-radius: 16px;
             padding: 28px 24px;
             width: 100%;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -96,7 +142,7 @@
             font-size: 1.6rem;
             text-align: right;
             line-height: 2.2;
-            color: #e2e8f0;
+            color: var(--arabic-color);
             font-family: 'Amiri', 'Traditional Arabic', serif;
             margin-top: 5px;
             direction: rtl;
@@ -129,7 +175,7 @@
             padding: 12px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: var(--btn-bg);
             color: var(--text-color);
             font-weight: 600;
             font-size: 0.9rem;
@@ -139,28 +185,27 @@
             justify-content: center;
             gap: 6px;
             touch-action: manipulation;
-            transition: all 0.2s ease;
         }
 
         .btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--btn-hover);
         }
 
         .btn-primary {
             background-color: var(--accent-color);
-            color: #0f172a;
+            color: #ffffff;
             border: none;
         }
 
         .btn-primary:hover {
-            background-color: #059669;
+            opacity: 0.9;
         }
 
         .toast {
             position: fixed;
             bottom: 20px;
             background-color: var(--accent-color);
-            color: #0f172a;
+            color: #ffffff;
             padding: 10px 20px;
             border-radius: 8px;
             font-weight: bold;
@@ -186,6 +231,9 @@
 
 <div class="container">
     <div class="header">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
+            ☀️ Gündüz
+        </button>
         <h1>Günün Ayeti & Duası</h1>
         <p>Her gün yeni bir feyz ve ilham</p>
     </div>
@@ -500,7 +548,32 @@
 
     let currentIndex = -1;
 
-    // Günün tarihine göre değişmeyen index üretir
+    // --- TEMA YÖNETİMİ ---
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        applyTheme(savedTheme);
+    }
+
+    function toggleTheme() {
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const newTheme = isLight ? 'dark' : 'light';
+        applyTheme(newTheme);
+    }
+
+    function applyTheme(theme) {
+        const btn = document.getElementById('theme-btn');
+        if (theme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.innerHTML = '🌙 Gece';
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            btn.innerHTML = '☀️ Gündüz';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // --- İÇERİK YÖNETİMİ ---
     function getDailyIndex() {
         const today = new Date();
         const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
@@ -582,7 +655,8 @@
         }, 2000);
     }
 
-    // Sayfa açıldığında günün içeriğini yükle
+    // İlk açılış işlemleri
+    initTheme();
     renderContent(getDailyIndex());
 </script>
 
