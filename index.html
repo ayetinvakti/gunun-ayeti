@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Günün Ayeti ve Duası | Ayetin Vakti</title>
 
-    <!-- Sosyal Medya & Mesajlaşma Önizleme Etiketleri -->
     <meta property="og:title" content="Günün Ayeti & Duası | Ayetin Vakti">
     <meta property="og:description" content="Her gün yeni bir feyz ve ilham. Ayet, hadis ve duaları keşfedin ve paylaşın.">
     <meta property="og:type" content="website">
 
-    <!-- Arapça Font Desteği -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* Gece Teması (Varsayılan Koyu Mode) */
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -31,7 +28,6 @@
             --modal-bg: #1e293b;
         }
 
-        /* Gündüz Teması (Açık Mode) */
         [data-theme="light"] {
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
@@ -261,7 +257,6 @@
             opacity: 0.9;
         }
 
-        /* FAVORİLER MODALI */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -433,8 +428,8 @@
         </div>
 
         <div class="audio-actions">
-            <button class="audio-btn" id="btn-audio-ar" onclick="playTilavet()">🎙️ Hafız Tilaveti (Arapça)</button>
-            <button class="audio-btn" id="btn-audio-tr" onclick="speakTurkish()">🔊 Türkçe Meali</button>
+            <button class="audio-btn" id="btn-audio-ar" onclick="playTilavet('ar')">🎙️ Hafız Tilaveti (Arapça)</button>
+            <button class="audio-btn" id="btn-audio-tr" onclick="playTilavet('tr')">🔊 Sesli Meal (Türkçe)</button>
         </div>
 
         <div class="actions">
@@ -449,16 +444,13 @@
     </div>
 </div>
 
-<!-- Favoriler Modalı -->
 <div class="modal-overlay" id="fav-modal" onclick="closeFavoritesModal(event)">
     <div class="modal" onclick="event.stopPropagation()">
         <div class="modal-header">
             <h2>⭐ Favori İçeriklerim</h2>
             <button class="close-btn" onclick="closeFavoritesModal()">&times;</button>
         </div>
-        <div class="modal-body" id="fav-list">
-            <!-- Favori öğeleri buraya yüklenecek -->
-        </div>
+        <div class="modal-body" id="fav-list"></div>
     </div>
 </div>
 
@@ -466,7 +458,6 @@
 
 <script>
     const database = [
-        // --- AYET-İ KERİMELER (Sure ve Ayet Numaralı) ---
         {
             type: "Ayet-i Kerime",
             sura: 2, ayah: 152,
@@ -516,8 +507,6 @@
             meaning: "Şüphesiz Allah sabredenlerle beraberdir.",
             source: "Bakara Suresi, 153. Ayet"
         },
-
-        // --- GÜNÜN DUALARI ---
         {
             type: "Günün Duası",
             sura: 2, ayah: 201,
@@ -539,8 +528,6 @@
             meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
-
-        // --- HADİS-İ ŞERİFLER ---
         {
             type: "Hadis-i Şerif",
             sura: null, ayah: null,
@@ -560,9 +547,9 @@
     let currentIndex = -1;
     let toastTimeout = null;
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    let currentAudio = null; // Gerçek ses oynatıcı
+    let currentAudio = null;
+    let activeLang = null;
 
-    // --- TEMA YÖNETİMİ ---
     function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(savedTheme);
@@ -586,11 +573,9 @@
         }
     }
 
-    // --- İÇERİK YÖNETİMİ ---
     function getDailyIndex() {
         const today = new Date();
         const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-        
         let hash = 0;
         for (let i = 0; i < dateString.length; i++) {
             hash = dateString.charCodeAt(i) + ((hash << 5) - hash);
@@ -620,17 +605,11 @@
         renderContent(newIndex);
     }
 
-    // --- FAVORİ YÖNETİMİ ---
     function updateFavIcon() {
         const favBtn = document.getElementById('fav-btn');
         const isFav = favorites.includes(currentIndex);
-        if (isFav) {
-            favBtn.classList.add('active');
-            favBtn.innerText = '★';
-        } else {
-            favBtn.classList.remove('active');
-            favBtn.innerText = '☆';
-        }
+        favBtn.classList.toggle('active', isFav);
+        favBtn.innerText = isFav ? '★' : '☆';
     }
 
     function toggleFavorite() {
@@ -689,29 +668,25 @@
         openFavoritesModal();
     }
 
-    // --- SES OKUMA VE HAFIZ TİLAVETİ ---
+    // --- GERÇEK SES (MP3) ÇALMA SİSTEMİ ---
     function stopAllAudio() {
-        // Gerçek MP3 Sesini Durdur
         if (currentAudio) {
             currentAudio.pause();
             currentAudio = null;
         }
-        // Tarayıcı Sesini Durdur
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-        }
-
+        activeLang = null;
         document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça)";
-        document.getElementById('btn-audio-tr').innerText = "🔊 Türkçe Meali";
+        document.getElementById('btn-audio-tr').innerText = "🔊 Sesli Meal (Türkçe)";
     }
 
-    // EveryAyah MP3 Ses Servisi (Mişari Raşid el-Afasi)
-    function playTilavet() {
+    function playTilavet(lang) {
         const item = database[currentIndex];
-        const btn = document.getElementById('btn-audio-ar');
+        const btnId = lang === 'ar' ? 'btn-audio-ar' : 'btn-audio-tr';
+        const btn = document.getElementById(btnId);
+        const defaultText = lang === 'ar' ? "🎙️ Hafız Tilaveti (Arapça)" : "🔊 Sesli Meal (Türkçe)";
 
-        // Çalan ses varsa durdur
-        if (currentAudio && !currentAudio.paused) {
+        // Çalan sesi durdurma kontrolü
+        if (currentAudio && !currentAudio.paused && activeLang === lang) {
             stopAllAudio();
             return;
         }
@@ -719,81 +694,40 @@
         stopAllAudio();
 
         if (!item.sura || !item.ayah) {
-            // Hadis ise TTS kullanarak Arapça okur
-            speakText(item.arabic, 'ar-SA', 'btn-audio-ar', "🎙️ Hafız Tilaveti (Arapça)");
+            showToast("Hadis-i Şerifler için sesli okuma mevcut değildir.");
             return;
         }
 
-        // Sure ve Ayet numarasını 3 haneli formata çevir (Örn: Suresi 2 -> 002, Ayet 152 -> 152)
-        const suraStr = String(item.sura).padStart(3, '0');
-        const ayahStr = String(item.ayah).padStart(3, '0');
-        
-        // Mişari Raşid el-Afasi tilavet adresi
-        const audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
+        let audioUrl = "";
 
+        if (lang === 'ar') {
+            // Arapça Hafız Kaydı (Mişari Raşid el-Afasi - EveryAyah)
+            const suraStr = String(item.sura).padStart(3, '0');
+            const ayahStr = String(item.ayah).padStart(3, '0');
+            audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
+        } else {
+            // Türkçe Profesyonel Meal Kaydı (AcikKuran CDN)
+            audioUrl = `https://cdn.acikkuran.com/audios/verses/${item.sura}/${item.ayah}/tr.mp3`;
+        }
+
+        activeLang = lang;
         currentAudio = new Audio(audioUrl);
         btn.innerText = "⌛ Yükleniyor...";
 
         currentAudio.play().then(() => {
             btn.innerText = "⏹ Durdur";
         }).catch(err => {
-            btn.innerText = "🎙️ Hafız Tilaveti (Arapça)";
-            showToast("Ses yüklenemedi, internetinizi kontrol edin.");
+            btn.innerText = defaultText;
+            activeLang = null;
+            showToast("Ses dosyası yüklenemedi, bağlantınızı kontrol edin.");
         });
 
         currentAudio.onended = () => {
-            btn.innerText = "🎙️ Hafız Tilaveti (Arapça)";
+            btn.innerText = defaultText;
+            activeLang = null;
         };
     }
 
-    // Net Türkçe Ses Motoru
-    function speakTurkish() {
-        const item = database[currentIndex];
-        const btn = document.getElementById('btn-audio-tr');
-
-        if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
-            stopAllAudio();
-            return;
-        }
-
-        stopAllAudio();
-        speakText(item.meaning, 'tr-TR', 'btn-audio-tr', "🔊 Türkçe Meali");
-    }
-
-    function speakText(text, lang, btnId, originalText) {
-        if (!('speechSynthesis' in window)) {
-            showToast("Cihazınız sesli okumayı desteklemiyor.");
-            return;
-        }
-
-        const btn = document.getElementById(btnId);
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = lang;
-        utterance.rate = 0.9;
-
-        // Tarayıcıdaki en net sesi seç
-        const voices = window.speechSynthesis.getVoices();
-        const bestVoice = voices.find(v => v.lang.startsWith(lang.substring(0, 2)) && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Enhanced')));
-        if (bestVoice) {
-            utterance.voice = bestVoice;
-        }
-
-        utterance.onstart = () => {
-            btn.innerText = "⏹ Durdur";
-        };
-
-        utterance.onend = () => {
-            btn.innerText = originalText;
-        };
-
-        utterance.onerror = () => {
-            btn.innerText = originalText;
-        };
-
-        window.speechSynthesis.speak(utterance);
-    }
-
-    // --- KOPYALAMA VE PAYLAŞMA ---
     function copyContent() {
         const item = database[currentIndex];
         const textToCopy = `${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\nAyetin Vakti projesinden paylaşıldı.`;
@@ -848,7 +782,6 @@
         }, 2000);
     }
 
-    // İlk Yükleme
     initTheme();
     renderContent(getDailyIndex());
 </script>
