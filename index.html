@@ -9,6 +9,16 @@
     <meta property="og:description" content="Her gün yeni bir feyz ve ilham. Ayet, hadis ve duaları keşfedin ve paylaşın.">
     <meta property="og:type" content="website">
 
+    <!-- Sayfa yüklenirken beyaz ekran patlamasını ve tema gecikmesini önleyen kritik script -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -549,7 +559,7 @@
             type: "Günün Duası",
             sura: 21, ayah: 87,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldوم.",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
         {
@@ -585,18 +595,19 @@
 
     function toggleTheme() {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        applyTheme(isLight ? 'dark' : 'light');
+        const newTheme = isLight ? 'dark' : 'light';
+        applyTheme(newTheme);
     }
 
     function applyTheme(theme) {
         const btn = document.getElementById('theme-btn');
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '🌙 Gece'; // Açık moddayken tıklanınca geceye geçecek
+            btn.innerHTML = '🌙 Gece'; 
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '☀️ Gündüz'; // Koyu moddayken tıklanınca gündüze geçecek
+            btn.innerHTML = '☀️ Gündüz'; 
             localStorage.setItem('theme', 'dark');
         }
     }
