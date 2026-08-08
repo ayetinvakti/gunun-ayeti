@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Günün Ayeti ve Duası | Ayetin Vakti</title>
 
     <meta property="og:title" content="Günün Ayeti & Duası | Ayetin Vakti">
@@ -56,7 +56,8 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         body {
@@ -68,7 +69,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
@@ -85,8 +86,8 @@
             flex-direction: column;
             align-items: center;
             position: relative;
-            margin-bottom: 24px;
-            padding-top: 10px;
+            margin-bottom: 20px;
+            padding-top: 5px;
         }
 
         .top-nav {
@@ -143,13 +144,13 @@
             font-size: 1.8rem;
             color: var(--accent-color);
             margin-top: 35px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             text-align: center;
         }
 
         .header p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             text-align: center;
         }
 
@@ -157,12 +158,12 @@
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 28px 24px;
+            padding: 24px 20px;
             width: 100%;
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             position: relative;
         }
 
@@ -190,30 +191,24 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-muted);
-            transition: transform 0.2s ease, color 0.2s ease;
         }
 
         .fav-icon-btn.active {
             color: #f59e0b;
         }
 
-        .fav-icon-btn:hover {
-            transform: scale(1.15);
-        }
-
         .arabic-text {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             text-align: right;
-            line-height: 2.2;
+            line-height: 2.1;
             color: var(--arabic-color);
             font-family: 'Amiri', 'Traditional Arabic', serif;
-            margin-top: 5px;
             direction: rtl;
         }
 
         .meaning-text {
-            font-size: 1.05rem;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.5;
             color: var(--text-color);
             font-style: italic;
         }
@@ -228,8 +223,7 @@
         .audio-actions {
             display: flex;
             border-top: 1px dashed var(--border-color);
-            padding-top: 12px;
-            margin-top: 4px;
+            padding-top: 10px;
         }
 
         .audio-btn {
@@ -248,26 +242,22 @@
             gap: 6px;
         }
 
-        .audio-btn:hover {
-            background-color: var(--btn-hover);
-        }
-
         .actions {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 6px;
             width: 100%;
         }
 
         .btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 8px;
             border-radius: 10px;
             border: 1px solid var(--border-color);
             background-color: var(--btn-bg);
             color: var(--text-color);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -276,18 +266,10 @@
             touch-action: manipulation;
         }
 
-        .btn:hover {
-            background-color: var(--btn-hover);
-        }
-
         .btn-primary {
             background-color: var(--accent-color);
             color: #ffffff;
             border: none;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
         }
 
         .modal-overlay {
@@ -297,19 +279,15 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.6);
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
             z-index: 2000;
             padding: 20px;
         }
 
         .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
+            display: flex;
         }
 
         .modal {
@@ -333,7 +311,7 @@
         }
 
         .modal-header h2 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--accent-color);
         }
 
@@ -341,7 +319,7 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             cursor: pointer;
         }
 
@@ -350,14 +328,14 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .fav-item {
             background-color: var(--btn-bg);
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 12px;
+            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -365,14 +343,10 @@
             cursor: pointer;
         }
 
-        .fav-item:hover {
-            background-color: var(--btn-hover);
-        }
-
         .fav-info {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 2px;
             overflow: hidden;
         }
 
@@ -382,17 +356,18 @@
         }
 
         .fav-info span {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--text-muted);
         }
 
         .delete-fav-btn {
             background: none;
             border: none;
             color: #ef4444;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             padding: 4px;
         }
@@ -401,7 +376,7 @@
             text-align: center;
             color: var(--text-muted);
             padding: 20px 0;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .toast {
@@ -409,23 +384,21 @@
             bottom: 20px;
             background-color: var(--accent-color);
             color: #ffffff;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 0.9rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
+            font-size: 0.85rem;
+            display: none;
             z-index: 3000;
         }
 
         .toast.show {
-            opacity: 1;
+            display: block;
         }
 
         .footer {
-            margin-top: 24px;
-            font-size: 0.85rem;
+            margin-top: 20px;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
     </style>
@@ -469,7 +442,7 @@
         <div class="actions">
             <button class="btn" onclick="copyContent()">📋 Kopyala</button>
             <button class="btn" onclick="shareContent()">🔗 Paylaş</button>
-            <button class="btn btn-primary" onclick="getRandomContent()">Yeni 🌟(Ayet, Dua Hadis)</button>
+            <button class="btn btn-primary" onclick="getRandomContent()">Yeni 🌟</button>
         </div>
     </div>
 
@@ -595,12 +568,13 @@
 
     function toggleTheme() {
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const newTheme = isLight ? 'dark' : 'light';
-        applyTheme(newTheme);
+        applyTheme(isLight ? 'dark' : 'light');
     }
 
     function applyTheme(theme) {
         const btn = document.getElementById('theme-btn');
+        if (!btn) return;
+        
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
             btn.innerHTML = '🌙 Gece'; 
@@ -714,7 +688,8 @@
             currentAudio = null;
         }
         isPlaying = false;
-        document.getElementById('btn-audio-ar').innerText = "🎙️ Hafız Tilaveti (Arapça Dinle)";
+        const btn = document.getElementById('btn-audio-ar');
+        if(btn) btn.innerText = "🎙️ Hafız Tilaveti (Arapça Dinle)";
     }
 
     function playArabic() {
@@ -806,6 +781,7 @@
         }, 2000);
     }
 
+    // Başlangıç tetiklemeleri
     initTheme();
     renderContent(getDailyIndex());
 </script>
