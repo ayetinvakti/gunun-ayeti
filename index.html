@@ -428,7 +428,7 @@
 
         <div class="top-nav">
             <button class="top-btn" onclick="openFavoritesModal()">⭐ Favorilerim</button>
-            <button class="top-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">🌙 Gece</button>
+            <button class="top-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">☀️ Gündüz</button>
         </div>
         <h1>Günün Ayeti & Duası</h1>
         <p>Her gün yeni bir feyz ve ilham</p>
@@ -549,7 +549,7 @@
             type: "Günün Duası",
             sura: 21, ayah: 87,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldوم.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
         {
@@ -592,11 +592,11 @@
         const btn = document.getElementById('theme-btn');
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '🌙 Gece'; // Açık moddayken geceye geçişi göstersin
+            btn.innerHTML = '🌙 Gece'; // Açık moddayken tıklanınca geceye geçecek
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '☀️ Gündüz'; // Koyu moddayken gündüze geçişi göstersin
+            btn.innerHTML = '☀️ Gündüz'; // Koyu moddayken tıklanınca gündüze geçecek
             localStorage.setItem('theme', 'dark');
         }
     }
