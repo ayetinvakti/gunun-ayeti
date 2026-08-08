@@ -87,7 +87,6 @@
             gap: 8px;
         }
 
-        /* Zikirmatikteki gibi sadece ok simgeli buton */
         .home-btn {
             position: absolute;
             left: 0;
@@ -425,12 +424,11 @@
 
 <div class="container">
     <div class="header">
-        <!-- Zikirmatikteki gibi sadece ok tuşu -->
         <button class="home-btn" onclick="goHome()" title="Ana Sayfa">←</button>
 
         <div class="top-nav">
             <button class="top-btn" onclick="openFavoritesModal()">⭐ Favorilerim</button>
-            <button class="top-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">☀️ Gündüz</button>
+            <button class="top-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">🌙 Gece</button>
         </div>
         <h1>Günün Ayeti & Duası</h1>
         <p>Her gün yeni bir feyz ve ilham</p>
@@ -576,7 +574,6 @@
     let currentAudio = null;
     let isPlaying = false;
 
-    // --- ANA SAYFAYA DÖNÜŞ FONKSİYONU ---
     function goHome() {
         window.location.href = '/'; 
     }
@@ -595,11 +592,11 @@
         const btn = document.getElementById('theme-btn');
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '🌙 Gece';
+            btn.innerHTML = '🌙 Gece'; // Açık moddayken geceye geçişi göstersin
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '☀️ Gündüz';
+            btn.innerHTML = '☀️ Gündüz'; // Koyu moddayken gündüze geçişi göstersin
             localStorage.setItem('theme', 'dark');
         }
     }
