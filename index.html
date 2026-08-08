@@ -96,6 +96,7 @@
             top: 0;
             display: flex;
             gap: 8px;
+            align-items: center;
         }
 
         .home-btn {
@@ -137,6 +138,25 @@
         }
 
         .top-btn:hover {
+            background-color: var(--btn-hover);
+        }
+
+        /* Ana ekrandakine benzer yuvarlak ikon buton stili */
+        .theme-icon-btn {
+            background-color: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-icon-btn:hover {
             background-color: var(--btn-hover);
         }
 
@@ -411,7 +431,7 @@
 
         <div class="top-nav">
             <button class="top-btn" onclick="openFavoritesModal()">⭐ Favorilerim</button>
-            <button class="top-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">☀️ Gündüz</button>
+            <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir">☀️</button>
         </div>
         <h1>Günün Ayeti & Duası</h1>
         <p>Her gün yeni bir feyz ve ilham</p>
@@ -577,11 +597,11 @@
         
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '🌙 Gece'; 
+            btn.innerHTML = '🌙'; 
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '☀️ Gündüz'; 
+            btn.innerHTML = '☀️'; 
             localStorage.setItem('theme', 'dark');
         }
     }
