@@ -87,6 +87,29 @@
             gap: 8px;
         }
 
+        /* Sol Üst Ana Sayfa Butonu */
+        .home-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--btn-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .home-btn:hover {
+            background-color: var(--btn-hover);
+        }
+
         .top-btn {
             background-color: var(--btn-bg);
             border: 1px solid var(--border-color);
@@ -400,6 +423,9 @@
 
 <div class="container">
     <div class="header">
+        <!-- Ana Sayfa Dönüş Tuşu -->
+        <button class="home-btn" onclick="goHome()" title="Ana Sayfa">←</button>
+
         <div class="top-nav">
             <button class="top-btn" onclick="openFavoritesModal()">⭐ Favorilerim</button>
             <button class="top-btn" onclick="toggleTheme()" id="theme-btn" aria-label="Tema değiştir">☀️ Gündüz</button>
@@ -548,6 +574,11 @@
     let currentAudio = null;
     let isPlaying = false;
 
+    // --- ANA SAYFAYA DÖNÜŞ FONKSİYONU ---
+    function goHome() {
+        window.location.href = '/'; 
+    }
+
     function initTheme() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
         applyTheme(savedTheme);
@@ -666,7 +697,6 @@
         openFavoritesModal();
     }
 
-    // --- Sadece Arapça Ses Çalan Sistem ---
     function stopAudio() {
         if (currentAudio) {
             currentAudio.pause();
