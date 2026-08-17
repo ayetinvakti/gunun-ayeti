@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <script>
+        // Tema, Özel Renk Paleti ve Dil Kontrolü (Sayfa yüklenmeden önce çalışır, titremeyi önler)
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+
+        const savedAccent = localStorage.getItem('custom_accent');
+        const savedBg = localStorage.getItem('custom_bg');
+        const savedText = localStorage.getItem('custom_text');
+
+        if (savedAccent) document.documentElement.style.setProperty('--accent-color', savedAccent);
+        if (savedBg) {
+            document.documentElement.style.setProperty('--bg-color', savedBg);
+            document.documentElement.style.setProperty('--card-bg', savedBg);
+            document.documentElement.style.setProperty('--modal-bg', savedBg);
+        }
+        if (savedText) document.documentElement.style.setProperty('--text-color', savedText);
+
+        const currentLang = localStorage.getItem('user_lang') || 'tr';
+        if (currentLang === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+        }
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Günün Ayeti ve Duası | Ayetin Vakti</title>
+    <title data-i18n="page_title">Günün Ayeti ve Duası | Ayetin Vakti</title>
 
     <meta property="og:title" content="Günün Ayeti & Duası | Ayetin Vakti">
     <meta property="og:description" content="Her gün yeni bir feyz ve ilham. Ayet, hadis ve duaları keşfedin ve paylaşın.">
     <meta property="og:type" content="website">
-
-    <!-- Sayfa yüklenirken beyaz ekran patlamasını ve tema gecikmesini önleyen kritik script -->
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
-        })();
-    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -70,6 +92,7 @@
             align-items: center;
             justify-content: center;
             padding: 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -99,6 +122,11 @@
             align-items: center;
         }
 
+        [dir="rtl"] .top-nav {
+            right: auto;
+            left: 0;
+        }
+
         .home-btn {
             position: absolute;
             left: 0;
@@ -116,6 +144,11 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
+        }
+
+        [dir="rtl"] .home-btn {
+            left: auto;
+            right: 0;
         }
 
         .home-btn:hover {
@@ -141,7 +174,6 @@
             background-color: var(--btn-hover);
         }
 
-        /* Ana ekrandakine benzer yuvarlak ikon buton stili */
         .theme-icon-btn {
             background-color: var(--btn-bg);
             border: 1px solid var(--border-color);
@@ -226,11 +258,20 @@
             direction: rtl;
         }
 
+        [dir="rtl"] .arabic-text {
+            text-align: right;
+        }
+
         .meaning-text {
             font-size: 1rem;
             line-height: 1.5;
             color: var(--text-color);
             font-style: italic;
+        }
+
+        [dir="rtl"] .meaning-text,
+        [dir="rtl"] .source-text {
+            text-align: right;
         }
 
         .source-text {
@@ -430,16 +471,16 @@
         <button class="home-btn" onclick="goHome()" title="Ana Sayfa">←</button>
 
         <div class="top-nav">
-            <button class="top-btn" onclick="openFavoritesModal()">⭐ Favorilerim</button>
+            <button class="top-btn" onclick="openFavoritesModal()" data-i18n="fav_btn">⭐ Favorilerim</button>
             <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir">☀️</button>
         </div>
-        <h1>Günün Ayeti & Duası</h1>
-        <p>Her gün yeni bir feyz ve ilham</p>
+        <h1 data-i18n="main_title">Günün Ayeti & Duası</h1>
+        <p data-i18n="main_subtitle">Her gün yeni bir feyz ve ilham</p>
     </div>
 
     <div class="card">
         <div class="card-top">
-            <span class="badge" id="type-badge">Yükleniyor...</span>
+            <span class="badge" id="type-badge" data-i18n="loading">Yükleniyor...</span>
             <button class="fav-icon-btn" id="fav-btn" onclick="toggleFavorite()" title="Favorilere Ekle">★</button>
         </div>
         
@@ -447,7 +488,7 @@
             ...
         </div>
 
-        <div class="meaning-text" id="meaning-content">
+        <div class="meaning-text" id="meaning-content" data-i18n="loading">
             Yükleniyor...
         </div>
 
@@ -456,17 +497,17 @@
         </div>
 
         <div class="audio-actions">
-            <button class="audio-btn" id="btn-audio-ar" onclick="playArabic()">🎙️ Hafız Tilaveti (Arapça Dinle)</button>
+            <button class="audio-btn" id="btn-audio-ar" onclick="playArabic()" data-i18n="audio_btn">🎙️ Hafız Tilaveti (Arapça Dinle)</button>
         </div>
 
         <div class="actions">
-            <button class="btn" onclick="copyContent()">📋 Kopyala</button>
-            <button class="btn" onclick="shareContent()">🔗 Paylaş</button>
-            <button class="btn btn-primary" onclick="getRandomContent()">Yeni 🌟</button>
+            <button class="btn" onclick="copyContent()" data-i18n="btn_copy">📋 Kopyala</button>
+            <button class="btn" onclick="shareContent()" data-i18n="btn_share">🔗 Paylaş</button>
+            <button class="btn btn-primary" onclick="getRandomContent()" data-i18n="btn_new">Yeni 🌟</button>
         </div>
     </div>
 
-    <div class="footer">
+    <div class="footer" data-i18n="footer_text">
         Ayetin Vakti • Günlük Huzur
     </div>
 </div>
@@ -474,7 +515,7 @@
 <div class="modal-overlay" id="fav-modal" onclick="closeFavoritesModal(event)">
     <div class="modal" onclick="event.stopPropagation()">
         <div class="modal-header">
-            <h2>⭐ Favori İçeriklerim</h2>
+            <h2 data-i18n="modal_title">⭐ Favori İçeriklerim</h2>
             <button class="close-btn" onclick="closeFavoritesModal()">&times;</button>
         </div>
         <div class="modal-body" id="fav-list"></div>
@@ -484,6 +525,82 @@
 <div class="toast" id="toast" role="alert" aria-live="polite">İşlem tamamlandı!</div>
 
 <script>
+    // Dil Sözlüğü
+    const translations = {
+        tr: {
+            page_title: "Günün Ayeti ve Duası | Ayetin Vakti",
+            main_title: "Günün Ayeti & Duası",
+            main_subtitle: "Her gün yeni bir feyz ve ilham",
+            fav_btn: "⭐ Favorilerim",
+            loading: "Yükleniyor...",
+            audio_btn: "🎙️ Hafız Tilaveti (Arapça Dinle)",
+            audio_stop: "⏹ Durdur",
+            audio_loading: "⌛ Yükleniyor...",
+            btn_copy: "📋 Kopyala",
+            btn_share: "🔗 Paylaş",
+            btn_new: "Yeni 🌟",
+            footer_text: "Ayetin Vakti • Günlük Huzur",
+            modal_title: "⭐ Favori İçeriklerim",
+            empty_fav: "Henüz favorilere eklenmiş bir içerik yok.",
+            toast_added: "Favorilere eklendi!",
+            toast_removed: "Favorilerden çıkarıldı.",
+            toast_copied: "Metin kopyalandı!",
+            toast_copy_fail: "Kopyalama başarısız oldu.",
+            toast_audio_fail: "Ses yüklenirken bir hata oluştu.",
+            toast_no_audio: "Hadis-i Şerifler için tilavet sesi bulunmamaktadır.",
+            share_suffix: "Ayetin Vakti projesinden paylaşıldı."
+        },
+        en: {
+            page_title: "Verse & Prayer of the Day | Ayetin Vakti",
+            main_title: "Verse & Prayer of the Day",
+            main_subtitle: "New grace and inspiration every day",
+            fav_btn: "⭐ Favorites",
+            loading: "Loading...",
+            audio_btn: "🎙️ Recitation (Listen Arabic)",
+            audio_stop: "⏹ Stop",
+            audio_loading: "⌛ Loading...",
+            btn_copy: "📋 Copy",
+            btn_share: "🔗 Share",
+            btn_new: "New 🌟",
+            footer_text: "Ayetin Vakti • Daily Peace",
+            modal_title: "⭐ My Favorite Items",
+            empty_fav: "No items added to favorites yet.",
+            toast_added: "Added to favorites!",
+            toast_removed: "Removed from favorites.",
+            toast_copied: "Text copied!",
+            toast_copy_fail: "Copy failed.",
+            toast_audio_fail: "Error loading audio.",
+            toast_no_audio: "No recitation audio available for Hadiths.",
+            share_suffix: "Shared from Ayetin Vakti project."
+        },
+        ar: {
+            page_title: "آية ودعاء اليوم | آية الوقت",
+            main_title: "آية ودعاء اليوم",
+            main_subtitle: "فيض وإلهام جديد كل يوم",
+            fav_btn: "⭐ المفضلة",
+            loading: "جاري التحميل...",
+            audio_btn: "🎙️ تلاوة القارئ (استمع بالعربية)",
+            audio_stop: "⏹ إيقاف",
+            audio_loading: "⌛ جاري التحميل...",
+            btn_copy: "📋 نسخ",
+            btn_share: "🔗 مشاركة",
+            btn_new: "جديد 🌟",
+            footer_text: "آية الوقت • سكينة يومية",
+            modal_title: "⭐ المحتوى المفضل لدي",
+            empty_fav: "لا توجد عناصر مضافة إلى المفضلة بعد.",
+            toast_added: "تمت الإضافة إلى المفضلة!",
+            toast_removed: "تمت الإزالة من المفضلة.",
+            toast_copied: "تم نسخ النص!",
+            toast_copy_fail: "فشل النسخ.",
+            toast_audio_fail: "حدث خطأ أثناء تحميل الصوت.",
+            toast_no_audio: "لا توجد تلاوة صوتية متاحة للأحاديث الشريفة.",
+            share_suffix: "تمت المشاركة من مشروع آية الوقت."
+        }
+    };
+
+    const activeLang = localStorage.getItem('user_lang') || 'tr';
+    const t = translations[activeLang] || translations['tr'];
+
     const database = [
         {
             type: "Ayet-i Kerime",
@@ -552,7 +669,7 @@
             type: "Günün Duası",
             sura: 21, ayah: 87,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldوم.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
         {
@@ -578,7 +695,7 @@
     let isPlaying = false;
 
     function goHome() {
-        window.location.href = '/'; 
+        window.location.href = '../'; 
     }
 
     function initTheme() {
@@ -649,10 +766,10 @@
         const favIndex = favorites.indexOf(currentIndex);
         if (favIndex > -1) {
             favorites.splice(favIndex, 1);
-            showToast("Favorilerden çıkarıldı.");
+            showToast(t.toast_removed);
         } else {
             favorites.push(currentIndex);
-            showToast("Favorilere eklendi!");
+            showToast(t.toast_added);
         }
         localStorage.setItem('favorites', JSON.stringify(favorites));
         updateFavIcon();
@@ -663,7 +780,7 @@
         favList.innerHTML = '';
 
         if (favorites.length === 0) {
-            favList.innerHTML = '<div class="empty-msg">Henüz favorilere eklenmiş bir içerik yok.</div>';
+            favList.innerHTML = `<div class="empty-msg">${t.empty_fav}</div>`;
         } else {
             favorites.forEach(idx => {
                 const item = database[idx];
@@ -709,7 +826,7 @@
         }
         isPlaying = false;
         const btn = document.getElementById('btn-audio-ar');
-        if(btn) btn.innerText = "🎙️ Hafız Tilaveti (Arapça Dinle)";
+        if(btn) btn.innerText = t.audio_btn;
     }
 
     function playArabic() {
@@ -722,11 +839,11 @@
         }
 
         if (!item.sura || !item.ayah) {
-            showToast("Hadis-i Şerifler için tilavet sesi bulunmamaktadır.");
+            showToast(t.toast_no_audio);
             return;
         }
 
-        btn.innerText = "⌛ Yükleniyor...";
+        btn.innerText = t.audio_loading;
 
         const suraStr = String(item.sura).padStart(3, '0');
         const ayahStr = String(item.ayah).padStart(3, '0');
@@ -736,10 +853,10 @@
 
         currentAudio.play().then(() => {
             isPlaying = true;
-            btn.innerText = "⏹ Durdur";
+            btn.innerText = t.audio_stop;
         }).catch(() => {
             stopAudio();
-            showToast("Ses yüklenirken bir hata oluştu.");
+            showToast(t.toast_audio_fail);
         });
 
         currentAudio.onended = () => {
@@ -749,11 +866,11 @@
 
     function copyContent() {
         const item = database[currentIndex];
-        const textToCopy = `${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\nAyetin Vakti projesinden paylaşıldı.`;
+        const textToCopy = `${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\n${t.share_suffix}`;
 
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(textToCopy).then(() => {
-                showToast("Metin kopyalandı!");
+                showToast(t.toast_copied);
             }).catch(() => fallbackCopy(textToCopy));
         } else {
             fallbackCopy(textToCopy);
@@ -767,9 +884,9 @@
         textArea.select();
         try {
             document.execCommand('copy');
-            showToast("Metin kopyalandı!");
+            showToast(t.toast_copied);
         } catch (err) {
-            showToast("Kopyalama başarısız oldu.");
+            showToast(t.toast_copy_fail);
         }
         document.body.removeChild(textArea);
     }
@@ -801,9 +918,21 @@
         }, 2000);
     }
 
-    // Başlangıç tetiklemeleri
-    initTheme();
-    renderContent(getDailyIndex());
+    // Sayfa Açılış Başlatıcıları
+    document.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+
+        // Statik metinleri dile göre yerleştir
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                if (el.tagName === 'TITLE') document.title = t[key];
+                else el.textContent = t[key];
+            }
+        });
+
+        renderContent(getDailyIndex());
+    });
 </script>
 
 </body>
