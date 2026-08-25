@@ -669,7 +669,7 @@
             type: "Günün Duası",
             sura: 21, ayah: 87,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldوم.",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
         {
@@ -699,26 +699,35 @@
     }
 
     function initTheme() {
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        applyTheme(savedTheme);
+        const savedTheme = localStorage.getItem('theme');
+        // Eğer localStorage'da tema kayıtlı değilse sistem tercihine göre ayarla
+        if (savedTheme === 'light') {
+            applyTheme('light');
+        } else if (savedTheme === 'dark') {
+            applyTheme('dark');
+        } else {
+            // Hiçbiri yoksa sistem tercihine bak
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(systemDark ? 'dark' : 'light');
+        }
     }
 
     function toggleTheme() {
-        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        applyTheme(isLight ? 'dark' : 'light');
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        applyTheme(newTheme);
     }
 
     function applyTheme(theme) {
         const btn = document.getElementById('theme-btn');
-        if (!btn) return;
         
         if (theme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            btn.innerHTML = '🌙'; 
+            if (btn) btn.innerHTML = '🌙'; 
             localStorage.setItem('theme', 'light');
         } else {
             document.documentElement.removeAttribute('data-theme');
-            btn.innerHTML = '☀️'; 
+            if (btn) btn.innerHTML = '☀️'; 
             localStorage.setItem('theme', 'dark');
         }
     }
