@@ -505,7 +505,7 @@
 
     <div class="card">
         <div class="card-top">
-            <span class="badge" id="type-badge" data-i18n="loading">Yükleniyor...</span>
+            <span class="badge" id="type-badge">Yükleniyor...</span>
             <button class="fav-icon-btn" id="fav-btn" onclick="toggleFavorite()" title="Favorilere Ekle">★</button>
         </div>
         
@@ -513,7 +513,7 @@
             ...
         </div>
 
-        <div class="meaning-text" id="meaning-content" data-i18n="loading">
+        <div class="meaning-text" id="meaning-content">
             Yükleniyor...
         </div>
 
@@ -556,7 +556,6 @@
             main_title: "Günün Ayeti & Duası",
             main_subtitle: "Her gün yeni bir feyz ve ilham",
             fav_btn: "⭐ Favorilerim",
-            loading: "Yükleniyor...",
             audio_btn: "🎙️ Hafız Tilaveti (Arapça Dinle)",
             audio_stop: "⏹ Durdur",
             audio_loading: "⌛ Yükleniyor...",
@@ -579,7 +578,6 @@
             main_title: "Verse & Prayer of the Day",
             main_subtitle: "New grace and inspiration every day",
             fav_btn: "⭐ Favorites",
-            loading: "Loading...",
             audio_btn: "🎙️ Recitation (Listen Arabic)",
             audio_stop: "⏹ Stop",
             audio_loading: "⌛ Loading...",
@@ -602,7 +600,6 @@
             main_title: "آية ودعاء اليوم",
             main_subtitle: "فيض وإلهام جديد كل يوم",
             fav_btn: "⭐ المفضلة",
-            loading: "جاري التحميل...",
             audio_btn: "🎙️ تلاوة القارئ (استمع بالعربية)",
             audio_stop: "⏹ إيقاف",
             audio_loading: "⌛ جاري التحميل...",
@@ -690,7 +687,7 @@
             type: "Günün Duası",
             sura: 21, ayah: 87,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldوم.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
         {
@@ -737,8 +734,8 @@
     function toggleTheme() {
         const isLight = document.documentElement.classList.toggle('light-mode');
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        const lang = localStorage.getItem('user_lang') || 'tr';
-        applyTranslations(lang);
+        const themeBtn = document.getElementById('theme-btn');
+        if (themeBtn) themeBtn.innerHTML = isLight ? '☀️' : '🌙';
     }
 
     function getDailyIndex() {
