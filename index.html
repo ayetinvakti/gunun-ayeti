@@ -12,9 +12,10 @@
             document.documentElement.lang = savedLang;
             if (savedLang === 'ar') document.documentElement.dir = 'rtl';
 
-            // Tema Yükleme
+            // Tema Yükleme (Titremeyi önlemek için hem documentElement hem body'ye ekleniyor)
             const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
                 document.documentElement.classList.add('light-mode');
             }
 
@@ -497,7 +498,7 @@
 
         <div class="top-nav">
             <button class="top-btn" onclick="openFavoritesModal()" data-i18n="fav_btn">⭐ Favorilerim</button>
-            <button class="theme-icon-btn" onclick="toggleTheme()" id="theme-btn" title="Tema Değiştir">🌙</button>
+            <button class="theme-icon-btn" id="theme-btn" title="Tema Değiştir">🌙</button>
         </div>
         <h1 data-i18n="main_title">Günün Ayeti & Duası</h1>
         <p data-i18n="main_subtitle">Her gün yeni bir feyz ve ilham</p>
@@ -687,7 +688,7 @@
             type: "Günün Duası",
             sura: 21, ayah: 87,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldوم.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
         },
         {
@@ -725,27 +726,10 @@
                 else el.innerHTML = t[key];
             }
         });
-
-        const themeBtn = document.getElementById('theme-btn');
-        const isLight = document.documentElement.classList.contains('light-mode');
-        if (themeBtn) themeBtn.innerHTML = isLight ? '☀️' : '🌙';
-    }
-
-    function toggleTheme() {
-        const isLight = document.documentElement.classList.toggle('light-mode');
-        localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        const themeBtn = document.getElementById('theme-btn');
-        if (themeBtn) themeBtn.innerHTML = isLight ? '☀️' : '🌙';
     }
 
     function getDailyIndex() {
-        const today = new Date();
-        const dateString = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-        let hash = 0;
-        for (let i = 0; i < dateString.length; i++) {
-            hash = dateString.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        return Math.abs(hash) % database.length;
+        return Math.floor(Math.random() * database.length);
     }
 
     function renderContent(index) {
@@ -948,8 +932,29 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let isLight = (savedTheme === 'light') || (!savedTheme && !systemPrefersDark);
+        
+        const themeBtn = document.getElementById('theme-btn');
+        
+        if (themeBtn) {
+            themeBtn.textContent = isLight ? '☀️' : '🌙';
+        }
+
+        if (isLight) {
             document.documentElement.classList.add('light-mode');
+            document.body.classList.add('light-mode');
+        }
+
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('light-mode');
+                document.body.classList.toggle('light-mode');
+                
+                const currentIsLight = document.documentElement.classList.contains('light-mode');
+                localStorage.setItem('theme', currentIsLight ? 'light' : 'dark');
+                themeBtn.textContent = currentIsLight ? '☀️' : '🌙';
+            });
         }
 
         const savedLang = localStorage.getItem('user_lang') || 'tr';
