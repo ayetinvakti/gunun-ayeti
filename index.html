@@ -47,30 +47,30 @@
 
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #10b981;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #334155;
-            --btn-bg: rgba(255, 255, 255, 0.05);
-            --btn-hover: rgba(255, 255, 255, 0.1);
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --accent-color: #2dd4bf;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #1f2937;
+            --btn-bg: rgba(255, 255, 255, 0.03);
+            --btn-hover: rgba(255, 255, 255, 0.08);
             --arabic-color: #e2e8f0;
             --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            --modal-bg: #1e293b;
+            --modal-bg: #111827;
         }
 
         [data-theme="light"] {
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --accent-color: #059669;
+            --accent-color: #0d9488;
             --text-color: #0f172a;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
             --btn-bg: #f1f5f9;
             --btn-hover: #e2e8f0;
             --arabic-color: #1e293b;
-            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
             --modal-bg: #ffffff;
         }
 
@@ -131,19 +131,21 @@
             position: absolute;
             left: 0;
             top: 0;
-            background-color: var(--btn-bg);
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            color: var(--text-color);
-            width: 38px;
-            height: 38px;
+            color: var(--accent-color);
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
         }
 
         [dir="rtl"] .home-btn {
@@ -152,52 +154,60 @@
         }
 
         .home-btn:hover {
+            border-color: var(--accent-color);
             background-color: var(--btn-hover);
         }
 
         .top-btn {
-            background-color: var(--btn-bg);
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            color: var(--text-color);
-            height: 38px;
-            padding: 0 12px;
-            border-radius: 20px;
+            color: var(--accent-color);
+            height: 42px;
+            padding: 0 14px;
+            border-radius: 21px;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
         }
 
         .top-btn:hover {
+            border-color: var(--accent-color);
             background-color: var(--btn-hover);
         }
 
         .theme-icon-btn {
-            background-color: var(--btn-bg);
+            background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            color: var(--text-color);
-            width: 38px;
-            height: 38px;
+            color: var(--accent-color);
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             font-size: 1.1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
         }
 
         .theme-icon-btn:hover {
+            border-color: var(--accent-color);
             background-color: var(--btn-hover);
         }
 
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             color: var(--accent-color);
-            margin-top: 35px;
+            margin-top: 50px;
             margin-bottom: 4px;
             text-align: center;
+            font-weight: 700;
         }
 
         .header p {
@@ -209,13 +219,13 @@
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px 20px;
             width: 100%;
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
             position: relative;
         }
 
@@ -227,22 +237,23 @@
         }
 
         .badge {
-            background-color: rgba(16, 185, 129, 0.15);
+            background-color: rgba(45, 212, 191, 0.12);
             color: var(--accent-color);
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.75rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
         }
 
         .fav-icon-btn {
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             cursor: pointer;
             color: var(--text-muted);
+            transition: color 0.2s;
         }
 
         .fav-icon-btn.active {
@@ -252,7 +263,7 @@
         .arabic-text {
             font-size: 1.5rem;
             text-align: right;
-            line-height: 2.1;
+            line-height: 2.2;
             color: var(--arabic-color);
             font-family: 'Amiri', 'Traditional Arabic', serif;
             direction: rtl;
@@ -264,7 +275,7 @@
 
         .meaning-text {
             font-size: 1rem;
-            line-height: 1.5;
+            line-height: 1.6;
             color: var(--text-color);
             font-style: italic;
         }
@@ -276,23 +287,24 @@
 
         .source-text {
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: var(--accent-color);
             text-align: right;
             font-weight: 600;
+            opacity: 0.9;
         }
 
         .audio-actions {
             display: flex;
             border-top: 1px dashed var(--border-color);
-            padding-top: 10px;
+            padding-top: 12px;
         }
 
         .audio-btn {
             width: 100%;
-            padding: 10px;
-            font-size: 0.9rem;
+            padding: 11px;
+            font-size: 0.88rem;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
             background-color: var(--btn-bg);
             color: var(--text-color);
@@ -300,37 +312,54 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .audio-btn:hover {
+            border-color: var(--accent-color);
+            background-color: var(--btn-hover);
         }
 
         .actions {
             display: flex;
             gap: 8px;
-            margin-top: 6px;
+            margin-top: 4px;
             width: 100%;
         }
 
         .btn {
             flex: 1;
             padding: 12px 8px;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
             background-color: var(--btn-bg);
             color: var(--text-color);
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 6px;
             touch-action: manipulation;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            border-color: var(--accent-color);
+            background-color: var(--btn-hover);
         }
 
         .btn-primary {
             background-color: var(--accent-color);
-            color: #ffffff;
+            color: #0b0f19;
             border: none;
+            font-weight: 700;
+        }
+
+        [data-theme="light"] .btn-primary {
+            color: #ffffff;
         }
 
         .modal-overlay {
@@ -345,6 +374,7 @@
             justify-content: center;
             z-index: 2000;
             padding: 20px;
+            backdrop-filter: blur(4px);
         }
 
         .modal-overlay.open {
@@ -354,7 +384,7 @@
         .modal {
             background-color: var(--modal-bg);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 20px;
             width: 100%;
             max-width: 480px;
             max-height: 80vh;
@@ -395,19 +425,24 @@
         .fav-item {
             background-color: var(--btn-bg);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 12px;
+            padding: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 10px;
             cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .fav-item:hover {
+            border-color: var(--accent-color);
         }
 
         .fav-info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 3px;
             overflow: hidden;
         }
 
@@ -430,7 +465,7 @@
             color: #ef4444;
             font-size: 1rem;
             cursor: pointer;
-            padding: 4px;
+            padding: 6px;
         }
 
         .empty-msg {
@@ -442,15 +477,20 @@
 
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             background-color: var(--accent-color);
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 8px;
+            color: #0b0f19;
+            padding: 10px 18px;
+            border-radius: 10px;
             font-weight: bold;
             font-size: 0.85rem;
             display: none;
             z-index: 3000;
+            box-shadow: var(--shadow);
+        }
+
+        [data-theme="light"] .toast {
+            color: #ffffff;
         }
 
         .toast.show {
@@ -700,13 +740,11 @@
 
     function initTheme() {
         const savedTheme = localStorage.getItem('theme');
-        // Eğer localStorage'da tema kayıtlı değilse sistem tercihine göre ayarla
         if (savedTheme === 'light') {
             applyTheme('light');
         } else if (savedTheme === 'dark') {
             applyTheme('dark');
         } else {
-            // Hiçbiri yoksa sistem tercihine bak
             const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             applyTheme(systemDark ? 'dark' : 'light');
         }
@@ -927,11 +965,9 @@
         }, 2000);
     }
 
-    // Sayfa Açılış Başlatıcıları
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
-        // Statik metinleri dile göre yerleştir
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (t[key]) {
