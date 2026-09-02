@@ -1,950 +1,1078 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<script>
-(function() {
-// Dil ve RTL Kontrolü
-const savedLang = localStorage.getItem('user_lang') || 'tr';
-document.documentElement.lang = savedLang;
-if (savedLang === 'ar') document.documentElement.dir = 'rtl';
-// Tema Yükleme (Titremeyi önlemek için hem documentElement hem body'ye ekleniyor)
-const savedTheme = localStorage.getItem('theme');
-const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
-document.documentElement.classList.add('light-mode');
-}
-// Özel Renk Paleti Yükleme
-const customAccent = localStorage.getItem('custom_accent');
-const customText = localStorage.getItem('custom_text');
-const customBg = localStorage.getItem('custom_bg');
-if (customAccent) document.documentElement.style.setProperty('--accent-color', customAccent);
-if (customText) document.documentElement.style.setProperty('--text-color', customText);
-if (customBg) {
-document.documentElement.style.setProperty('--bg-color', customBg);
-document.documentElement.style.setProperty('--card-bg', customBg);
-}
-})();
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title data-i18n="page_title">Günün Ayeti, Duası ve Hadisi | Ayetin Vakti</title>
-<meta property="og:title" content="Günün Ayeti, Duası & Hadisi | Ayetin Vakti">
-<meta property="og:description" content="Her gün yeni bir feyz ve ilham. Ayet, Riyâzü’s-Sâlihîn'den seçme hadisler ve duaları keşfedin.">
-<meta property="og:type" content="website">
-<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-<link href="[https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap](https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap)" rel="stylesheet">
-<style>
-:root {
---bg-color: #0b1120;
---card-bg: #1e293b;
---accent-color: #10b981;
---text-color: #f8fafc;
---text-muted: #94a3b8;
---border-color: #334155;
---font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
---shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-/* Arapça Font Uyumluluğu */
-html[lang="ar"] {
---font-family: 'Amiri', 'Traditional Arabic', serif;
-}
-* {
-box-sizing: border-box;
-margin: 0;
-padding: 0;
-user-select: none;
--webkit-user-select: none;
-}
-body {
-font-family: var(--font-family);
-background-color: var(--bg-color);
-color: var(--text-color);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-padding: 16px;
-transition: background-color 0.3s ease, color 0.3s ease;
-}
-.container {
-width: 100%;
-max-width: 500px;
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-.header {
-width: 100%;
-display: flex;
-flex-direction: column;
-align-items: center;
-position: relative;
-margin-bottom: 20px;
-padding-top: 5px;
-}
-.top-nav {
-position: absolute;
-right: 0;
-top: 0;
-display: flex;
-gap: 8px;
-align-items: center;
-}
-[dir="rtl"] .top-nav {
-right: auto;
-left: 0;
-}
-.home-btn {
-position: absolute;
-left: 0;
-top: 0;
-background-color: var(--card-bg);
-border: 1px solid var(--border-color);
-color: var(--text-color);
-width: 42px;
-height: 42px;
-border-radius: 50%;
-font-size: 1.25rem;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-text-decoration: none;
-box-shadow: var(--shadow);
-transition: all 0.2s ease;
-}
-[dir="rtl"] .home-btn {
-left: auto;
-right: 0;
-transform: scaleX(-1);
-}
-.home-btn:hover {
-border-color: var(--accent-color);
-color: var(--accent-color);
-}
-.top-btn {
-background-color: var(--card-bg);
-border: 1px solid var(--border-color);
-color: var(--accent-color);
-height: 42px;
-padding: 0 14px;
-border-radius: 21px;
-font-size: 0.85rem;
-font-weight: 600;
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 6px;
-box-shadow: var(--shadow);
-transition: all 0.2s ease;
-}
-.top-btn:hover {
-border-color: var(--accent-color);
-}
-.theme-icon-btn {
-background-color: var(--card-bg);
-border: 1px solid var(--border-color);
-color: var(--accent-color);
-width: 42px;
-height: 42px;
-border-radius: 50%;
-font-size: 1.1rem;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: var(--shadow);
-transition: all 0.2s ease;
-}
-.theme-icon-btn:hover {
-border-color: var(--accent-color);
-}
-.header h1 {
-font-size: 1.5rem;
-color: var(--accent-color);
-margin-top: 50px;
-margin-bottom: 4px;
-text-align: center;
-font-weight: 700;
-}
-.header p {
-color: var(--text-muted);
-font-size: 0.85rem;
-text-align: center;
-}
-/* Kategori Filtre Butonları (Sekmeler) */
-.category-tabs {
-display: flex;
-gap: 6px;
-width: 100%;
-margin-bottom: 14px;
-background: rgba(255, 255, 255, 0.02);
-padding: 4px;
-border-radius: 14px;
-border: 1px solid var(--border-color);
-}
-.cat-tab {
-flex: 1;
-background: transparent;
-border: none;
-color: var(--text-muted);
-padding: 8px 4px;
-font-size: 0.78rem;
-font-weight: 600;
-border-radius: 10px;
-cursor: pointer;
-transition: all 0.2s ease;
-text-align: center;
-}
-.cat-tab.active {
-background-color: var(--accent-color);
-color: #ffffff;
-font-weight: 700;
-box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-}
-.card {
-background-color: var(--card-bg);
-border: 1px solid var(--border-color);
-border-radius: 18px;
-padding: 22px 18px;
-width: 100%;
-box-shadow: var(--shadow);
-display: flex;
-flex-direction: column;
-gap: 16px;
-position: relative;
-}
-.card-top {
-display: flex;
-justify-content: space-between;
-align-items: center;
-width: 100%;
-}
-.badge {
-background-color: rgba(16, 185, 129, 0.12);
-color: var(--accent-color);
-padding: 4px 12px;
-border-radius: 20px;
-font-size: 0.75rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.8px;
-}
-.fav-icon-btn {
-background: none;
-border: none;
-font-size: 1.4rem;
-cursor: pointer;
-color: var(--text-muted);
-transition: color 0.2s;
-}
-.fav-icon-btn.active {
-color: #f59e0b;
-}
-.arabic-text {
-font-size: 1.45rem;
-text-align: right;
-line-height: 2.2;
-color: var(--text-color);
-font-family: 'Amiri', 'Traditional Arabic', serif;
-direction: rtl;
-}
-[dir="rtl"] .arabic-text {
-text-align: right;
-}
-.meaning-text {
-font-size: 0.98rem;
-line-height: 1.6;
-color: var(--text-color);
-font-style: italic;
-}
-[dir="rtl"] .meaning-text,
-[dir="rtl"] .source-text {
-text-align: right;
-}
-.source-text {
-font-size: 0.85rem;
-color: var(--accent-color);
-text-align: right;
-font-weight: 600;
-opacity: 0.9;
-}
-.audio-actions {
-display: flex;
-border-top: 1px dashed var(--border-color);
-padding-top: 12px;
-}
-.audio-btn {
-width: 100%;
-padding: 10px;
-font-size: 0.85rem;
-font-weight: 600;
-border-radius: 10px;
-border: 1px solid var(--border-color);
-background-color: rgba(255, 255, 255, 0.02);
-color: var(--text-color);
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-transition: all 0.2s;
-}
-.audio-btn:hover {
-border-color: var(--accent-color);
-color: var(--accent-color);
-}
-.actions {
-display: flex;
-gap: 8px;
-margin-top: 4px;
-width: 100%;
-}
-.btn {
-flex: 1;
-padding: 11px 8px;
-border-radius: 10px;
-border: 1px solid var(--border-color);
-background-color: rgba(255, 255, 255, 0.02);
-color: var(--text-color);
-font-weight: 600;
-font-size: 0.82rem;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 6px;
-transition: all 0.2s;
-}
-.btn:hover {
-border-color: var(--accent-color);
-color: var(--accent-color);
-}
-.btn-primary {
-background-color: var(--accent-color);
-color: #ffffff;
-border: none;
-font-weight: 700;
-}
-.modal-overlay {
-position: fixed;
-inset: 0;
-background: rgba(0, 0, 0, 0.6);
-display: none;
-align-items: center;
-justify-content: center;
-z-index: 2000;
-padding: 16px;
-backdrop-filter: blur(4px);
-}
-.modal-overlay.active {
-display: flex;
-}
-.modal-card {
-background-color: var(--card-bg);
-border: 1px solid var(--border-color);
-border-radius: 20px;
-width: 100%;
-max-width: 450px;
-max-height: 80vh;
-display: flex;
-flex-direction: column;
-box-shadow: var(--shadow);
-}
-.modal-header {
-padding: 16px 20px;
-border-bottom: 1px solid var(--border-color);
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-.modal-title {
-font-size: 1.1rem;
-font-weight: 700;
-color: var(--accent-color);
-}
-.modal-close {
-background: none;
-border: none;
-color: var(--text-color);
-font-size: 1.2rem;
-cursor: pointer;
-}
-.modal-body {
-padding: 16px 20px;
-overflow-y: auto;
-display: flex;
-flex-direction: column;
-gap: 10px;
-}
-.fav-item {
-background-color: rgba(255, 255, 255, 0.02);
-border: 1px solid var(--border-color);
-border-radius: 12px;
-padding: 12px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-gap: 10px;
-cursor: pointer;
-transition: border-color 0.2s;
-}
-.fav-item:hover {
-border-color: var(--accent-color);
-}
-.fav-info {
-display: flex;
-flex-direction: column;
-gap: 3px;
-overflow: hidden;
-flex: 1;
-}
-.fav-info strong {
-font-size: 0.85rem;
-color: var(--accent-color);
-}
-.fav-info span {
-font-size: 0.8rem;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-color: var(--text-muted);
-}
-.delete-fav-btn {
-background: none;
-border: none;
-color: #ef4444;
-font-size: 1rem;
-cursor: pointer;
-padding: 6px;
-}
-.empty-msg {
-text-align: center;
-color: var(--text-muted);
-padding: 20px 0;
-font-size: 0.9rem;
-}
-.toast {
-position: fixed;
-bottom: 25px;
-background-color: var(--accent-color);
-color: #ffffff;
-padding: 10px 18px;
-border-radius: 10px;
-font-weight: bold;
-font-size: 0.85rem;
-display: none;
-z-index: 3000;
-box-shadow: var(--shadow);
-}
-.toast.show {
-display: block;
-}
-.footer {
-margin-top: 20px;
-font-size: 0.8rem;
-color: var(--text-muted);
-text-align: center;
-}
-/* Light Mode Destekleri */
-body.light-mode {
---bg-color: #f8fafc;
---card-bg: #ffffff;
---text-color: #0f172a;
---text-muted: #64748b;
---border-color: #e2e8f0;
-}
-</style>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <script>
+        (function() {
+            // Dil ve RTL Kontrolü
+            const savedLang = localStorage.getItem('user_lang') || 'tr';
+            document.documentElement.lang = savedLang;
+            if (savedLang === 'ar') document.documentElement.dir = 'rtl';
+
+            // Tema Yükleme (Titremeyi önlemek için hem documentElement hem body'ye ekleniyor)
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
+                document.documentElement.classList.add('light-mode');
+            }
+
+            // Özel Renk Paleti Yükleme
+            const customAccent = localStorage.getItem('custom_accent');
+            const customText = localStorage.getItem('custom_text');
+            const customBg = localStorage.getItem('custom_bg');
+
+            if (customAccent) document.documentElement.style.setProperty('--accent-color', customAccent);
+            if (customText) document.documentElement.style.setProperty('--text-color', customText);
+            if (customBg) {
+                document.documentElement.style.setProperty('--bg-color', customBg);
+                document.documentElement.style.setProperty('--card-bg', customBg);
+            }
+        })();
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title data-i18n="page_title">Günün Ayeti, Duası ve Hadisi | Ayetin Vakti</title>
+
+    <meta property="og:title" content="Günün Ayeti, Duası & Hadisi | Ayetin Vakti">
+    <meta property="og:description" content="Her gün yeni bir feyz ve ilham. Ayet, Riyâzü’s-Sâlihîn'den seçme hadisler ve duaları keşfedin.">
+    <meta property="og:type" content="website">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0b1120;
+            --card-bg: #1e293b;
+            --accent-color: #10b981;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Arapça Font Uyumluluğu */
+        html[lang="ar"] {
+            --font-family: 'Amiri', 'Traditional Arabic', serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+            padding-top: 5px;
+        }
+
+        .top-nav {
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        [dir="rtl"] .top-nav {
+            right: auto;
+            left: 0;
+        }
+
+        .home-btn {
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+        }
+
+        [dir="rtl"] .home-btn {
+            left: auto;
+            right: 0;
+            transform: scaleX(-1);
+        }
+
+        .home-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .top-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--accent-color);
+            height: 42px;
+            padding: 0 14px;
+            border-radius: 21px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+        }
+
+        .top-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .theme-icon-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--accent-color);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+        }
+
+        .theme-icon-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-top: 50px;
+            margin-bottom: 4px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        /* Kategori Filtre Butonları (Sekmeler) */
+        .category-tabs {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+            margin-bottom: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 4px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cat-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 4px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .cat-tab.active {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 22px 18px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .badge {
+            background-color: rgba(16, 185, 129, 0.12);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .fav-icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .fav-icon-btn.active {
+            color: #f59e0b;
+        }
+
+        .arabic-text {
+            font-size: 1.45rem;
+            text-align: right;
+            line-height: 2.2;
+            color: var(--text-color);
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            direction: rtl;
+        }
+
+        [dir="rtl"] .arabic-text {
+            text-align: right;
+        }
+
+        .meaning-text {
+            font-size: 0.98rem;
+            line-height: 1.6;
+            color: var(--text-color);
+            font-style: italic;
+        }
+
+        [dir="rtl"] .meaning-text,
+        [dir="rtl"] .source-text {
+            text-align: right;
+        }
+
+        .source-text {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            text-align: right;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .audio-actions {
+            display: flex;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 12px;
+        }
+
+        .audio-btn {
+            width: 100%;
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .audio-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+            width: 100%;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 11px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-color);
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border: none;
+            font-weight: 700;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fav-item {
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .fav-item:hover {
+            border-color: var(--accent-color);
+        }
+
+        .fav-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .fav-info strong {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+        }
+
+        .fav-info span {
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-muted);
+        }
+
+        .delete-fav-btn {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            background-color: var(--accent-color);
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            display: none;
+            z-index: 3000;
+            box-shadow: var(--shadow);
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Light Mode Destekleri */
+        body.light-mode {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+    </style>
 </head>
 <body>
+
 <div class="container">
-<div class="header">
-<a href="[https://ayetinvakti.github.io/](https://ayetinvakti.github.io/)" class="home-btn" title="Ana Sayfa">←</a>
-<div class="top-nav">
-<button class="top-btn" onclick="openFavoritesModal()" data-i18n="fav_btn">⭐ Favorilerim</button>
-<button class="theme-icon-btn" id="theme-btn" title="Tema Değiştir">🌙</button>
+    <div class="header">
+        <a href="https://ayetinvakti.github.io/" class="home-btn" title="Ana Sayfa">←</a>
+
+        <div class="top-nav">
+            <button class="top-btn" onclick="openFavoritesModal()" data-i18n="fav_btn">⭐ Favorilerim</button>
+            <button class="theme-icon-btn" id="theme-btn" title="Tema Değiştir">🌙</button>
+        </div>
+        <h1 data-i18n="main_title">Günün Ayeti, Duası & Hadisi</h1>
+        <p data-i18n="main_subtitle">Her gün yeni bir feyz ve ilham</p>
+    </div>
+
+    <!-- Kategori Filtreleme Sekmeleri -->
+    <div class="category-tabs">
+        <button class="cat-tab active" onclick="filterCategory('all')" data-i18n="tab_all">Tümü</button>
+        <button class="cat-tab" onclick="filterCategory('Ayet-i Kerime')" data-i18n="tab_verse">Ayetler</button>
+        <button class="cat-tab" onclick="filterCategory('Günün Duası')" data-i18n="tab_prayer">Dualar</button>
+        <button class="cat-tab" onclick="filterCategory('Hadis-i Şerif')" data-i18n="tab_hadith">Hadisler</button>
+    </div>
+
+    <div class="card">
+        <div class="card-top">
+            <span class="badge" id="type-badge">Yükleniyor...</span>
+            <button class="fav-icon-btn" id="fav-btn" onclick="toggleFavorite()" title="Favorilere Ekle">★</button>
+        </div>
+        
+        <div class="arabic-text" id="arabic-content" lang="ar">
+            ...
+        </div>
+
+        <div class="meaning-text" id="meaning-content">
+            Yükleniyor...
+        </div>
+
+        <div class="source-text" id="source-content">
+            —
+        </div>
+
+        <div class="audio-actions" id="audio-container">
+            <button class="audio-btn" id="btn-audio-ar" onclick="playArabic()" data-i18n="audio_btn">🎙️ Hafız Tilaveti (Arapça Dinle)</button>
+        </div>
+
+        <div class="actions">
+            <button class="btn" onclick="copyContent()" data-i18n="btn_copy">📋 Kopyala</button>
+            <button class="btn" onclick="shareContent()" data-i18n="btn_share">🔗 Paylaş</button>
+            <button class="btn btn-primary" onclick="getRandomContent()" data-i18n="btn_new">Yeni 🌟</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        © Ayetin Vakti • <span data-i18n="footer_text">Huzur ve İbadet Rehberliğiniz</span>
+    </div>
 </div>
-<h1 data-i18n="main_title">Günün Ayeti, Duası & Hadisi</h1>
-<p data-i18n="main_subtitle">Her gün yeni bir feyz ve ilham</p>
-</div>
-<!-- Kategori Filtreleme Sekmeleri -->
-<div class="category-tabs">
-<button class="cat-tab active" onclick="filterCategory('all')" data-i18n="tab_all">Tümü</button>
-<button class="cat-tab" onclick="filterCategory('Ayet-i Kerime')" data-i18n="tab_verse">Ayetler</button>
-<button class="cat-tab" onclick="filterCategory('Günün Duası')" data-i18n="tab_prayer">Dualar</button>
-<button class="cat-tab" onclick="filterCategory('Hadis-i Şerif')" data-i18n="tab_hadith">Hadisler</button>
-</div>
-<div class="card">
-<div class="card-top">
-<span class="badge" id="type-badge">Yükleniyor...</span>
-<button class="fav-icon-btn" id="fav-btn" onclick="toggleFavorite()" title="Favorilere Ekle">★</button>
-</div>
-<div class="arabic-text" id="arabic-content" lang="ar">
-...
-</div>
-<div class="meaning-text" id="meaning-content">
-Yükleniyor...
-</div>
-<div class="source-text" id="source-content">
-—
-</div>
-<div class="audio-actions" id="audio-container">
-<button class="audio-btn" id="btn-audio-ar" onclick="playArabic()" data-i18n="audio_btn">🎙️ Hafız Tilaveti (Arapça Dinle)</button>
-</div>
-<div class="actions">
-<button class="btn" onclick="copyContent()" data-i18n="btn_copy">📋 Kopyala</button>
-<button class="btn" onclick="shareContent()" data-i18n="btn_share">🔗 Paylaş</button>
-<button class="btn btn-primary" onclick="getRandomContent()" data-i18n="btn_new">Yeni 🌟</button>
-</div>
-</div>
-<div class="footer">
-© Ayetin Vakti • <span data-i18n="footer_text">Huzur ve İbadet Rehberliğiniz</span>
-</div>
-</div>
+
 <div class="modal-overlay" id="fav-modal" onclick="closeFavoritesModal(event)">
-<div class="modal-card" onclick="event.stopPropagation()">
-<div class="modal-header">
-<div class="modal-title" data-i18n="modal_title">⭐ Favori İçeriklerim</div>
-<button class="modal-close" onclick="closeFavoritesModal()">×</button>
+    <div class="modal-card" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title" data-i18n="modal_title">⭐ Favori İçeriklerim</div>
+            <button class="modal-close" onclick="closeFavoritesModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="fav-list"></div>
+    </div>
 </div>
-<div class="modal-body" id="fav-list"></div>
-</div>
-</div>
+
 <div class="toast" id="toast" role="alert" aria-live="polite">İşlem tamamlandı!</div>
+
 <script>
-const translations = {
-tr: {
-page_title: "Günün Ayeti, Duası ve Hadisi | Ayetin Vakti",
-main_title: "Günün Ayeti, Duası & Hadisi",
-main_subtitle: "Her gün yeni bir feyz ve ilham",
-fav_btn: "⭐ Favorilerim",
-audio_btn: "🎙️ Hafız Tilaveti (Arapça Dinle)",
-audio_stop: "⏹ Durdur",
-audio_loading: "⌛ Yükleniyor...",
-btn_copy: "📋 Kopyala",
-btn_share: "🔗 Paylaş",
-btn_new: "Yeni 🌟",
-footer_text: "Huzur ve İbadet Rehberliğiniz",
-modal_title: "⭐ Favori İçeriklerim",
-empty_fav: "Henüz favorilere eklenmiş bir içerik yok.",
-toast_added: "Favorilere eklendi!",
-toast_removed: "Favorilerden çıkarıldı.",
-toast_copied: "Metin kopyalandı!",
-toast_copy_fail: "Kopyalama başarısız oldu.",
-toast_audio_fail: "Ses yüklenirken bir hata oluştu.",
-tab_all: "Tümü",
-tab_verse: "Ayetler",
-tab_prayer: "Dualar",
-tab_hadith: "Hadisler",
-share_suffix: "Ayetin Vakti projesinden paylaşıldı."
-},
-en: {
-page_title: "Verse, Prayer & Hadith | Ayetin Vakti",
-main_title: "Verse, Prayer & Hadith",
-main_subtitle: "New grace and inspiration every day",
-fav_btn: "⭐ Favorites",
-audio_btn: "🎙️ Recitation (Listen Arabic)",
-audio_stop: "⏹ Stop",
-audio_loading: "⌛ Loading...",
-btn_copy: "📋 Copy",
-btn_share: "🔗 Share",
-btn_new: "New 🌟",
-footer_text: "Your Guide to Peace & Worship",
-modal_title: "⭐ My Favorite Items",
-empty_fav: "No items added to favorites yet.",
-toast_added: "Added to favorites!",
-toast_removed: "Removed from favorites.",
-toast_copied: "Text copied!",
-toast_copy_fail: "Copy failed.",
-toast_audio_fail: "Error loading audio.",
-tab_all: "All",
-tab_verse: "Verses",
-tab_prayer: "Prayers",
-tab_hadith: "Hadiths",
-share_suffix: "Shared from Ayetin Vakti project."
-},
-ar: {
-page_title: "آية ودعاء وحديث اليوم | آية الوقت",
-main_title: "آية، دعاء وحديث اليوم",
-main_subtitle: "فيض وإلهام جديد كل يوم",
-fav_btn: "⭐ المفضلة",
-audio_btn: "🎙️ تلاوة القارئ (استمع بالعربية)",
-audio_stop: "⏹ إيقاف",
-audio_loading: "⌛ جاري التحميل...",
-btn_copy: "📋 نسخ",
-btn_share: "🔗 مشاركة",
-btn_new: "جديد 🌟",
-footer_text: "دليلك للسلام والعبادة",
-modal_title: "⭐ المحتوى المفضل لدي",
-empty_fav: "لا توجد عناصر مضافة إلى المفضلة بعد.",
-toast_added: "تمت الإضافة إلى المفضلة!",
-toast_removed: "تمت الإزالة من المفضلة.",
-toast_copied: "تم نسخ النص!",
-toast_copy_fail: "فشل النسخ.",
-toast_audio_fail: "حدث خطأ أثناء تحميل الصوت.",
-tab_all: "الكل",
-tab_verse: "آيات",
-tab_prayer: "أدعية",
-tab_hadith: "أحاديث",
-share_suffix: "تمت المشاركة من مشروع آية الوقت."
-}
-};
-const database = [
-{
-type: "Ayet-i Kerime",
-sura: 2, ayah: 152,
-arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
-meaning: "Öyleyse beni anın ki ben de sizi anayım. Bana şükredin, nankörlük etmeyin.",
-source: "Bakara Suresi, 152. Ayet"
-},
-{
-type: "Ayet-i Kerime",
-sura: 13, ayah: 28,
-arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
-meaning: "Bilesiniz ki, kalpler ancak Allah'ı anmakla huzur bulur.",
-source: "Ra'd Suresi, 28. Ayet"
-},
-{
-type: "Ayet-i Kerime",
-sura: 94, ayah: 6,
-arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
-meaning: "Şüphesiz her güçlükle beraber bir kolaylık vardır.",
-source: "İnşirah Suresi, 6. Ayet"
-},
-{
-type: "Ayet-i Kerime",
-sura: 52, ayah: 48,
-arabic: "وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا",
-meaning: "Rabbinin hükmüne sabret. Çünkü sen gözümüzün önündesin.",
-source: "Tûr Suresi, 48. Ayet"
-},
-{
-type: "Ayet-i Kerime",
-sura: 3, ayah: 173,
-arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
-meaning: "Allah bize yeter, O ne güzel vekildir.",
-source: "Âl-i İmrân Suresi, 173. Ayet"
-},
-{
-type: "Ayet-i Kerime",
-sura: 2, ayah: 186,
-arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ",
-meaning: "Kullarım sana beni sorarlarsa şüphesiz ben yakınım. Dua edenin duasına icabet ederim.",
-source: "Bakara Suresi, 186. Ayet"
-},
-{
-type: "Ayet-i Kerime",
-sura: 2, ayah: 153,
-arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
-meaning: "Şüphesiz Allah sabredenlerle beraberdir.",
-source: "Bakara Suresi, 153. Ayet"
-},
-{
-type: "Günün Duası",
-sura: 2, ayah: 201,
-arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
-meaning: "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru.",
-source: "Bakara Suresi, 201. Ayet"
-},
-{
-type: "Günün Duası",
-sura: 20, ayah: 25,
-arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
-meaning: "Rabbim! Göğsümü genişlet, işimi kolaylaştır.",
-source: "Tâhâ Suresi, 25-26. Ayetler"
-},
-{
-type: "Günün Duası",
-sura: 21, ayah: 87,
-arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
-meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
-source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
-},
-// Riyâzü’s-Sâlihîn ve Temel Kaynaklardan Seçme Hadis-i Şerifler
-{
-type: "Hadis-i Şerif",
-sura: null, ayah: null,
-arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
-meaning: "Ameller ancak niyetlere göredir. Herkese niyet ettiği şey vardır.",
-source: "Riyâzü’s-Sâlihîn, 1 (Buhârî, Bed'ü'l-vahy, 1)"
-},
-{
-type: "Hadis-i Şerif",
-sura: null, ayah: null,
-arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
-meaning: "Din kardeşine tebessüm etmen senin için bir sadakadır.",
-source: "Riyâzü’s-Sâlihîn / Tirmizî, Birr, 36"
-},
-{
-type: "Hadis-i Şerif",
-sura: null, ayah: null,
-arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ",
-meaning: "Müslüman, diğer Müslümanların elinden ve dilinden güvende olduğu (zarar görmediği) kişidir.",
-source: "Riyâzü’s-Sâlihîn, 210 (Buhârî, Îmân 4)"
-},
-{
-type: "Hadis-i Şerif",
-sura: null, ayah: null,
-arabic: "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
-meaning: "Sizden biriniz, kendi nefsi için istediğini mümin kardeşi için de istemedikçe gerçek anlamda iman etmiş olamaz.",
-source: "Riyâzü’s-Sâlihîn, 183 (Buhârî, Îmân 7)"
-},
-{
-type: "Hadis-i Şerif",
-sura: null, ayah: null,
-arabic: "الدِّينُ النَّصِيحَةُ",
-meaning: "Din, samimiyettir (iyi niyet ve öğüttür).",
-source: "Riyâzü’s-Sâlihîn, 187 (Müslim, Îmân 95)"
-},
-{
-type: "Hadis-i Şerif",
-sura: null, ayah: null,
-arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
-meaning: "Sinizin en hayırlınız, Kur'an'ı öğrenen ve öğreteninizdir.",
-source: "Riyâzü’s-Sâlihîn, 999 (Buhârî, Fezâilü'l-Kur'ân 21)"
-}
-];
-let currentFilter = 'all';
-let currentIndex = -1;
-let toastTimeout = null;
-let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-let currentAudio = null;
-let isPlaying = false;
-function applyTranslations(lang) {
-const t = translations[lang] || translations.tr;
-document.documentElement.lang = lang;
-document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-document.querySelectorAll('[data-i18n]').forEach(el => {
-const key = el.getAttribute('data-i18n');
-if (t[key]) {
-if (el.tagName === 'TITLE') document.title = t[key];
-else el.innerHTML = t[key];
-}
-});
-}
-function getFilteredDatabase() {
-if (currentFilter === 'all') return database;
-return database.filter(item => item.type === currentFilter);
-}
-function filterCategory(category) {
-currentFilter = category;
-// Aktif sekme stilini güncelle
-document.querySelectorAll('.cat-tab').forEach(tab => {
-tab.classList.remove('active');
-});
-event.target.classList.add('active');
-// Filtrelenen gruptan rastgele bir içerik göster
-getRandomContent();
-}
-function getDailyIndex() {
-const filtered = getFilteredDatabase();
-const randFilteredIdx = Math.floor(Math.random() * filtered.length);
-// Ana database içerisindeki gerçek index'i bul
-return database.indexOf(filtered[randFilteredIdx]);
-}
-function renderContent(index) {
-stopAudio();
-currentIndex = index;
-const item = database[currentIndex];
-document.getElementById('type-badge').innerText = item.type;
-document.getElementById('arabic-content').innerText = item.arabic;
-document.getElementById('meaning-content').innerText = ⁠"${item.meaning}"⁠;
-document.getElementById('source-content').innerText = ⁠— ${item.source}⁠;
-// Eğer hadis ise ve ayet/sure bilgisi yoksa ses butonunu gizle veya bilgi ver
-const audioContainer = document.getElementById('audio-container');
-if (!item.sura || !item.ayah) {
-audioContainer.style.display = 'none';
-} else {
-audioContainer.style.display = 'flex';
-}
-updateFavIcon();
-}
-function getRandomContent() {
-const filtered = getFilteredDatabase();
-if (filtered.length === 0) return;
-let newItem;
-let newIndex;
-do {
-const randFilteredIdx = Math.floor(Math.random() * filtered.length);
-newItem = filtered[randFilteredIdx];
-newIndex = database.indexOf(newItem);
-} while (newIndex === currentIndex && filtered.length > 1);
-renderContent(newIndex);
-}
-function updateFavIcon() {
-const favBtn = document.getElementById('fav-btn');
-const isFav = favorites.includes(currentIndex);
-favBtn.classList.toggle('active', isFav);
-favBtn.innerText = isFav ? '★' : '☆';
-}
-function toggleFavorite() {
-const lang = localStorage.getItem('user_lang') || 'tr';
-const t = translations[lang] || translations.tr;
-const favIndex = favorites.indexOf(currentIndex);
-if (favIndex > -1) {
-favorites.splice(favIndex, 1);
-showToast(t.toast_removed);
-} else {
-favorites.push(currentIndex);
-showToast(t.toast_added);
-}
-localStorage.setItem('favorites', JSON.stringify(favorites));
-updateFavIcon();
-}
-function openFavoritesModal() {
-const lang = localStorage.getItem('user_lang') || 'tr';
-const t = translations[lang] || translations.tr;
-const favList = document.getElementById('fav-list');
-favList.innerHTML = '';
-if (favorites.length === 0) {
-favList.innerHTML = ⁠<div class="empty-msg">${t.empty_fav}</div>⁠;
-} else {
-favorites.forEach(idx => {
-const item = database[idx];
-const div = document.createElement('div');
-div.className = 'fav-item';
-div.innerHTML = ⁠<div class="fav-info" onclick="selectFromFav(${idx})"> <strong>${item.type}</strong> <span>${item.meaning}</span> </div> <button class="delete-fav-btn" onclick="removeFavorite(event, ${idx})">🗑️</button>⁠;
-favList.appendChild(div);
-});
-}
-document.getElementById('fav-modal').classList.add('active');
-}
-function closeFavoritesModal(e) {
-if (!e || e.target.id === 'fav-modal' || e.target.classList.contains('modal-close')) {
-document.getElementById('fav-modal').classList.remove('active');
-}
-}
-function selectFromFav(index) {
-renderContent(index);
-closeFavoritesModal();
-}
-function removeFavorite(e, index) {
-e.stopPropagation();
-favorites = favorites.filter(id => id !== index);
-localStorage.setItem('favorites', JSON.stringify(favorites));
-updateFavIcon();
-openFavoritesModal();
-}
-function stopAudio() {
-if (currentAudio) {
-currentAudio.pause();
-currentAudio.src = "";
-currentAudio = null;
-}
-isPlaying = false;
-const lang = localStorage.getItem('user_lang') || 'tr';
-const t = translations[lang] || translations.tr;
-const btn = document.getElementById('btn-audio-ar');
-if(btn) btn.innerText = t.audio_btn;
-}
-function playArabic() {
-const item = database[currentIndex];
-const lang = localStorage.getItem('user_lang') || 'tr';
-const t = translations[lang] || translations.tr;
-const btn = document.getElementById('btn-audio-ar');
-if (isPlaying) {
-stopAudio();
-return;
-}
-if (!item.sura || !item.ayah) {
-return;
-}
-btn.innerText = t.audio_loading;
-const suraStr = String(item.sura).padStart(3, '0');
-const ayahStr = String(item.ayah).padStart(3, '0');
-const audioUrl = ⁠[https://everyayah.com/data/Alafasy_128kbps/$](https://everyayah.com/data/Alafasy_128kbps/$){suraStr}${ayahStr}.mp3⁠;
-currentAudio = new Audio(audioUrl);
-currentAudio.play().then(() => {
-isPlaying = true;
-btn.innerText = t.audio_stop;
-}).catch(() => {
-stopAudio();
-showToast(t.toast_audio_fail);
-});
-currentAudio.onended = () => {
-stopAudio();
-};
-}
-function copyContent() {
-const item = database[currentIndex];
-const lang = localStorage.getItem('user_lang') || 'tr';
-const t = translations[lang] || translations.tr;
-const textToCopy = ⁠${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\n${t.share_suffix}⁠;
-if (navigator.clipboard && window.isSecureContext) {
-navigator.clipboard.writeText(textToCopy).then(() => {
-showToast(t.toast_copied);
-}).catch(() => fallbackCopy(textToCopy));
-} else {
-fallbackCopy(textToCopy);
-}
-}
-function fallbackCopy(text) {
-const lang = localStorage.getItem('user_lang') || 'tr';
-const t = translations[lang] || translations.tr;
-const textArea = document.createElement("textarea");
-textArea.value = text;
-document.body.appendChild(textArea);
-textArea.select();
-try {
-document.execCommand('copy');
-showToast(t.toast_copied);
-} catch (err) {
-showToast(t.toast_copy_fail);
-}
-document.body.removeChild(textArea);
-}
-function shareContent() {
-const item = database[currentIndex];
-const shareData = {
-title: 'Ayetin Vakti',
-text: ⁠${item.type}: "${item.meaning}" (${item.source})⁠,
-url: window.location.href
-};
-if (navigator.share) {
-navigator.share(shareData).catch(() => {});
-} else {
-copyContent();
-}
-}
-function showToast(message) {
-const toast = document.getElementById('toast');
-toast.innerText = message;
-toast.classList.add('show');
-if (toastTimeout) clearTimeout(toastTimeout);
-toastTimeout = setTimeout(() => {
-toast.classList.remove('show');
-}, 2000);
-}
-document.addEventListener('DOMContentLoaded', () => {
-const savedTheme = localStorage.getItem('theme');
-const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-let isLight = (savedTheme === 'light') || (!savedTheme && !systemPrefersDark);
-const themeBtn = document.getElementById('theme-btn');
-if (themeBtn) {
-themeBtn.textContent = isLight ? '☀️' : '🌙';
-}
-if (isLight) {
-document.documentElement.classList.add('light-mode');
-document.body.classList.add('light-mode');
-}
-if (themeBtn) {
-themeBtn.addEventListener('click', () => {
-document.documentElement.classList.toggle('light-mode');
-document.body.classList.toggle('light-mode');
-const currentIsLight = document.documentElement.classList.contains('light-mode');
-localStorage.setItem('theme', currentIsLight ? 'light' : 'dark');
-themeBtn.textContent = currentIsLight ? '☀️' : '🌙';
-});
-}
-const savedLang = localStorage.getItem('user_lang') || 'tr';
-applyTranslations(savedLang);
-renderContent(getDailyIndex());
-});
+    const translations = {
+        tr: {
+            page_title: "Günün Ayeti, Duası ve Hadisi | Ayetin Vakti",
+            main_title: "Günün Ayeti, Duası & Hadisi",
+            main_subtitle: "Her gün yeni bir feyz ve ilham",
+            fav_btn: "⭐ Favorilerim",
+            audio_btn: "🎙️ Hafız Tilaveti (Arapça Dinle)",
+            audio_stop: "⏹ Durdur",
+            audio_loading: "⌛ Yükleniyor...",
+            btn_copy: "📋 Kopyala",
+            btn_share: "🔗 Paylaş",
+            btn_new: "Yeni 🌟",
+            footer_text: "Huzur ve İbadet Rehberliğiniz",
+            modal_title: "⭐ Favori İçeriklerim",
+            empty_fav: "Henüz favorilere eklenmiş bir içerik yok.",
+            toast_added: "Favorilere eklendi!",
+            toast_removed: "Favorilerden çıkarıldı.",
+            toast_copied: "Metin kopyalandı!",
+            toast_copy_fail: "Kopyalama başarısız oldu.",
+            toast_audio_fail: "Ses yüklenirken bir hata oluştu.",
+            tab_all: "Tümü",
+            tab_verse: "Ayetler",
+            tab_prayer: "Dualar",
+            tab_hadith: "Hadisler",
+            share_suffix: "Ayetin Vakti projesinden paylaşıldı."
+        },
+        en: {
+            page_title: "Verse, Prayer & Hadith | Ayetin Vakti",
+            main_title: "Verse, Prayer & Hadith",
+            main_subtitle: "New grace and inspiration every day",
+            fav_btn: "⭐ Favorites",
+            audio_btn: "🎙️ Recitation (Listen Arabic)",
+            audio_stop: "⏹ Stop",
+            audio_loading: "⌛ Loading...",
+            btn_copy: "📋 Copy",
+            btn_share: "🔗 Share",
+            btn_new: "New 🌟",
+            footer_text: "Your Guide to Peace & Worship",
+            modal_title: "⭐ My Favorite Items",
+            empty_fav: "No items added to favorites yet.",
+            toast_added: "Added to favorites!",
+            toast_removed: "Removed from favorites.",
+            toast_copied: "Text copied!",
+            toast_copy_fail: "Copy failed.",
+            toast_audio_fail: "Error loading audio.",
+            tab_all: "All",
+            tab_verse: "Verses",
+            tab_prayer: "Prayers",
+            tab_hadith: "Hadiths",
+            share_suffix: "Shared from Ayetin Vakti project."
+        },
+        ar: {
+            page_title: "آية ودعاء وحديث اليوم | آية الوقت",
+            main_title: "آية، دعاء وحديث اليوم",
+            main_subtitle: "فيض وإلهام جديد كل يوم",
+            fav_btn: "⭐ المفضلة",
+            audio_btn: "🎙️ تلاوة القارئ (استمع بالعربية)",
+            audio_stop: "⏹ إيقاف",
+            audio_loading: "⌛ جاري التحميل...",
+            btn_copy: "📋 نسخ",
+            btn_share: "🔗 مشاركة",
+            btn_new: "جديد 🌟",
+            footer_text: "دليلك للسلام والعبادة",
+            modal_title: "⭐ المحتوى المفضل لدي",
+            empty_fav: "لا توجد عناصر مضافة إلى المفضلة بعد.",
+            toast_added: "تمت الإضافة إلى المفضلة!",
+            toast_removed: "تمت الإزالة من المفضلة.",
+            toast_copied: "تم نسخ النص!",
+            toast_copy_fail: "فشل النسخ.",
+            toast_audio_fail: "حدث خطأ أثناء تحميل الصوت.",
+            tab_all: "الكل",
+            tab_verse: "آيات",
+            tab_prayer: "أدعية",
+            tab_hadith: "أحاديث",
+            share_suffix: "تمت المشاركة من مشروع آية الوقت."
+        }
+    };
+
+    const database = [
+        {
+            type: "Ayet-i Kerime",
+            sura: 2, ayah: 152,
+            arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
+            meaning: "Öyleyse beni anın ki ben de sizi anayım. Bana şükredin, nankörlük etmeyin.",
+            source: "Bakara Suresi, 152. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            sura: 13, ayah: 28,
+            arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
+            meaning: "Bilesiniz ki, kalpler ancak Allah'ı anmakla huzur bulur.",
+            source: "Ra'd Suresi, 28. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            sura: 94, ayah: 6,
+            arabic: "إِنَّ مَعَ الْعُسْرِ يُسْرًا",
+            meaning: "Şüphesiz her güçlükle beraber bir kolaylık vardır.",
+            source: "İnşirah Suresi, 6. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            sura: 52, ayah: 48,
+            arabic: "وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا",
+            meaning: "Rabbinin hükmüne sabret. Çünkü sen gözümüzün önündesin.",
+            source: "Tûr Suresi, 48. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            sura: 3, ayah: 173,
+            arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+            meaning: "Allah bize yeter, O ne güzel vekildir.",
+            source: "Âl-i İmrân Suresi, 173. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            sura: 2, ayah: 186,
+            arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ",
+            meaning: "Kullarım sana beni sorarlarsa şüphesiz ben yakınım. Dua edenin duasına icabet ederim.",
+            source: "Bakara Suresi, 186. Ayet"
+        },
+        {
+            type: "Ayet-i Kerime",
+            sura: 2, ayah: 153,
+            arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
+            meaning: "Şüphesiz Allah sabredenlerle beraberdir.",
+            source: "Bakara Suresi, 153. Ayet"
+        },
+        {
+            type: "Günün Duası",
+            sura: 2, ayah: 201,
+            arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+            meaning: "Rabbimiz! Bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru.",
+            source: "Bakara Suresi, 201. Ayet"
+        },
+        {
+            type: "Günün Duası",
+            sura: 20, ayah: 25,
+            arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
+            meaning: "Rabbim! Göğsümü genişlet, işimi kolaylaştır.",
+            source: "Tâhâ Suresi, 25-26. Ayetler"
+        },
+        {
+            type: "Günün Duası",
+            sura: 21, ayah: 87,
+            arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+            meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
+            source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
+        },
+        // Riyâzü’s-Sâlihîn ve Temel Kaynaklardan Seçme Hadis-i Şerifler
+        {
+            type: "Hadis-i Şerif",
+            sura: null, ayah: null,
+            arabic: "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى",
+            meaning: "Ameller ancak niyetlere göredir. Herkese niyet ettiği şey vardır.",
+            source: "Riyâzü’s-Sâlihîn, 1 (Buhârî, Bed'ü'l-vahy, 1)"
+        },
+        {
+            type: "Hadis-i Şerif",
+            sura: null, ayah: null,
+            arabic: "تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ",
+            meaning: "Din kardeşine tebessüm etmen senin için bir sadakadır.",
+            source: "Riyâzü’s-Sâlihîn / Tirmizî, Birr, 36"
+        },
+        {
+            type: "Hadis-i Şerif",
+            sura: null, ayah: null,
+            arabic: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ",
+            meaning: "Müslüman, diğer Müslümanların elinden ve dilinden güvende olduğu (zarar görmediği) kişidir.",
+            source: "Riyâzü’s-Sâlihîn, 210 (Buhârî, Îmân 4)"
+        },
+        {
+            type: "Hadis-i Şerif",
+            sura: null, ayah: null,
+            arabic: "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+            meaning: "Sizden biriniz, kendi nefsi için istediğini mümin kardeşi için de istemedikçe gerçek anlamda iman etmiş olamaz.",
+            source: "Riyâzü’s-Sâlihîn, 183 (Buhârî, Îmân 7)"
+        },
+        {
+            type: "Hadis-i Şerif",
+            sura: null, ayah: null,
+            arabic: "الدِّينُ النَّصِيحَةُ",
+            meaning: "Din, samimiyettir (iyi niyet ve öğüttür).",
+            source: "Riyâzü’s-Sâlihîn, 187 (Müslim, Îmân 95)"
+        },
+        {
+            type: "Hadis-i Şerif",
+            sura: null, ayah: null,
+            arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+            meaning: "Sinizin en hayırlınız, Kur'an'ı öğrenen ve öğreteninizdir.",
+            source: "Riyâzü’s-Sâlihîn, 999 (Buhârî, Fezâilü'l-Kur'ân 21)"
+        }
+    ];
+
+    let currentFilter = 'all';
+    let currentIndex = -1;
+    let toastTimeout = null;
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    let currentAudio = null;
+    let isPlaying = false;
+
+    function applyTranslations(lang) {
+        const t = translations[lang] || translations.tr;
+        
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                if (el.tagName === 'TITLE') document.title = t[key];
+                else el.innerHTML = t[key];
+            }
+        });
+    }
+
+    function getFilteredDatabase() {
+        if (currentFilter === 'all') return database;
+        return database.filter(item => item.type === currentFilter);
+    }
+
+    function filterCategory(category) {
+        currentFilter = category;
+        
+        document.querySelectorAll('.cat-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        getRandomContent();
+    }
+
+    function getDailyIndex() {
+        const filtered = getFilteredDatabase();
+        const randFilteredIdx = Math.floor(Math.random() * filtered.length);
+        return database.indexOf(filtered[randFilteredIdx]);
+    }
+
+    function renderContent(index) {
+        stopAudio();
+        currentIndex = index;
+        const item = database[currentIndex];
+
+        document.getElementById('type-badge').innerText = item.type;
+        document.getElementById('arabic-content').innerText = item.arabic;
+        document.getElementById('meaning-content').innerText = `"${item.meaning}"`;
+        document.getElementById('source-content').innerText = `— ${item.source}`;
+
+        const audioContainer = document.getElementById('audio-container');
+        if (!item.sura || !item.ayah) {
+            audioContainer.style.display = 'none';
+        } else {
+            audioContainer.style.display = 'flex';
+        }
+
+        updateFavIcon();
+    }
+
+    function getRandomContent() {
+        const filtered = getFilteredDatabase();
+        if (filtered.length === 0) return;
+
+        let newItem;
+        let newIndex;
+        do {
+            const randFilteredIdx = Math.floor(Math.random() * filtered.length);
+            newItem = filtered[randFilteredIdx];
+            newIndex = database.indexOf(newItem);
+        } while (newIndex === currentIndex && filtered.length > 1);
+        
+        renderContent(newIndex);
+    }
+
+    function updateFavIcon() {
+        const favBtn = document.getElementById('fav-btn');
+        const isFav = favorites.includes(currentIndex);
+        favBtn.classList.toggle('active', isFav);
+        favBtn.innerText = isFav ? '★' : '☆';
+    }
+
+    function toggleFavorite() {
+        const lang = localStorage.getItem('user_lang') || 'tr';
+        const t = translations[lang] || translations.tr;
+        const favIndex = favorites.indexOf(currentIndex);
+        
+        if (favIndex > -1) {
+            favorites.splice(favIndex, 1);
+            showToast(t.toast_removed);
+        } else {
+            favorites.push(currentIndex);
+            showToast(t.toast_added);
+        }
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavIcon();
+    }
+
+    function openFavoritesModal() {
+        const lang = localStorage.getItem('user_lang') || 'tr';
+        const t = translations[lang] || translations.tr;
+        const favList = document.getElementById('fav-list');
+        favList.innerHTML = '';
+
+        if (favorites.length === 0) {
+            favList.innerHTML = `<div class="empty-msg">${t.empty_fav}</div>`;
+        } else {
+            favorites.forEach(idx => {
+                const item = database[idx];
+                const div = document.createElement('div');
+                div.className = 'fav-item';
+                div.innerHTML = `
+                    <div class="fav-info" onclick="selectFromFav(${idx})">
+                        <strong>${item.type}</strong>
+                        <span>${item.meaning}</span>
+                    </div>
+                    <button class="delete-fav-btn" onclick="removeFavorite(event, ${idx})">🗑️</button>
+                `;
+                favList.appendChild(div);
+            });
+        }
+        document.getElementById('fav-modal').classList.add('active');
+    }
+
+    function closeFavoritesModal(e) {
+        if (!e || e.target.id === 'fav-modal' || e.target.classList.contains('modal-close')) {
+            document.getElementById('fav-modal').classList.remove('active');
+        }
+    }
+
+    function selectFromFav(index) {
+        renderContent(index);
+        closeFavoritesModal();
+    }
+
+    function removeFavorite(e, index) {
+        e.stopPropagation();
+        favorites = favorites.filter(id => id !== index);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavIcon();
+        openFavoritesModal();
+    }
+
+    function stopAudio() {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.src = "";
+            currentAudio = null;
+        }
+        isPlaying = false;
+        const lang = localStorage.getItem('user_lang') || 'tr';
+        const t = translations[lang] || translations.tr;
+        const btn = document.getElementById('btn-audio-ar');
+        if(btn) btn.innerText = t.audio_btn;
+    }
+
+    function playArabic() {
+        const item = database[currentIndex];
+        const lang = localStorage.getItem('user_lang') || 'tr';
+        const t = translations[lang] || translations.tr;
+        const btn = document.getElementById('btn-audio-ar');
+
+        if (isPlaying) {
+            stopAudio();
+            return;
+        }
+
+        if (!item.sura || !item.ayah) {
+            return;
+        }
+
+        btn.innerText = t.audio_loading;
+
+        const suraStr = String(item.sura).padStart(3, '0');
+        const ayahStr = String(item.ayah).padStart(3, '0');
+        const audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
+
+        currentAudio = new Audio(audioUrl);
+
+        currentAudio.play().then(() => {
+            isPlaying = true;
+            btn.innerText = t.audio_stop;
+        }).catch(() => {
+            stopAudio();
+            showToast(t.toast_audio_fail);
+        });
+
+        currentAudio.onended = () => {
+            stopAudio();
+        };
+    }
+
+    function copyContent() {
+        const item = database[currentIndex];
+        const lang = localStorage.getItem('user_lang') || 'tr';
+        const t = translations[lang] || translations.tr;
+        const textToCopy = `${item.type}\n\n${item.arabic}\n\n"${item.meaning}"\n\n— ${item.source}\n\n${t.share_suffix}`;
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast(t.toast_copied);
+            }).catch(() => fallbackCopy(textToCopy));
+        } else {
+            fallbackCopy(textToCopy);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const lang = localStorage.getItem('user_lang') || 'tr';
+        const t = translations[lang] || translations.tr;
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast(t.toast_copied);
+        } catch (err) {
+            showToast(t.toast_copy_fail);
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function shareContent() {
+        const item = database[currentIndex];
+        const shareData = {
+            title: 'Ayetin Vakti',
+            text: `${item.type}: "${item.meaning}" (${item.source})`,
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(() => {});
+        } else {
+            copyContent();
+        }
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.classList.add('show');
+        
+        if (toastTimeout) clearTimeout(toastTimeout);
+        
+        toastTimeout = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let isLight = (savedTheme === 'light') || (!savedTheme && !systemPrefersDark);
+        
+        const themeBtn = document.getElementById('theme-btn');
+        
+        if (themeBtn) {
+            themeBtn.textContent = isLight ? '☀️' : '🌙';
+        }
+
+        if (isLight) {
+            document.documentElement.classList.add('light-mode');
+            document.body.classList.add('light-mode');
+        }
+
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('light-mode');
+                document.body.classList.toggle('light-mode');
+                
+                const currentIsLight = document.documentElement.classList.contains('light-mode');
+                localStorage.setItem('theme', currentIsLight ? 'light' : 'dark');
+                themeBtn.textContent = currentIsLight ? '☀️' : '🌙';
+            });
+        }
+
+        const savedLang = localStorage.getItem('user_lang') || 'tr';
+        applyTranslations(savedLang);
+
+        renderContent(getDailyIndex());
+    });
 </script>
+
 </body>
 </html>
