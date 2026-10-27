@@ -90,6 +90,11 @@
             -webkit-user-select: none;
         }
 
+        /* Ard arda dokunuşta çift dokunma yakınlaştırmasını kapatır (iki parmakla yakınlaştırma açık kalır) */
+        html, body, button, a, select, input, label, [onclick] {
+            touch-action: manipulation;
+        }
+
         body {
             font-family: var(--font-family);
             background-color: var(--bg-color);
