@@ -4,6 +4,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="theme-color" content="#0b1120">
 
     <script>
         (function() {
@@ -12,7 +13,7 @@
             document.documentElement.lang = savedLang;
             if (savedLang === 'ar') document.documentElement.dir = 'rtl';
 
-            // Tema Yükleme (Titremeyi önlemek için hem documentElement hem body'ye ekleniyor)
+            // Tema Yükleme (titremeyi önlemek için en başta; tema sınıfı yalnızca <html> üzerinde)
             const savedTheme = localStorage.getItem('theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
@@ -30,6 +31,24 @@
                 document.documentElement.style.setProperty('--bg-color', customBg);
                 document.documentElement.style.setProperty('--card-bg', customBg);
             }
+
+            // Özel arka plan var, yazı rengi seçilmemişse okunabilir renkleri zeminin açıklığına göre seç
+            if (customBg && !customText) {
+                const m = /^#([0-9a-f]{6})$/i.exec(customBg.trim());
+                if (m) {
+                    const n = parseInt(m[1], 16);
+                    const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+                    const L = 0.2126 * lin(n >> 16) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+                    const bgIsLight = L > 0.18;
+                    document.documentElement.style.setProperty('--text-color', bgIsLight ? '#0f172a' : '#f8fafc');
+                    document.documentElement.style.setProperty('--text-muted', bgIsLight ? '#475569' : '#cbd5e1');
+                    document.documentElement.style.setProperty('--border-color', bgIsLight ? 'rgba(15,23,42,0.18)' : 'rgba(248,250,252,0.22)');
+                }
+            }
+
+            // Tarayıcı çubuğu rengi sayfa zeminine uysun
+            const metaTC = document.querySelector('meta[name="theme-color"]');
+            if (metaTC) metaTC.setAttribute('content', customBg || (document.documentElement.classList.contains('light-mode') ? '#f8fafc' : '#0b1120'));
         })();
     </script>
 
@@ -47,6 +66,7 @@
 
     <style>
         :root {
+            color-scheme: dark;
             --bg-color: #0b1120;
             --card-bg: #1e293b;
             --accent-color: #10b981;
@@ -141,10 +161,9 @@
             transform: scaleX(-1);
         }
 
-        .home-btn:hover {
+        @media (hover: hover) { .home-btn:hover {
             border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
+            color: var(--accent-color); } }
 
         .top-btn {
             background-color: var(--card-bg);
@@ -163,9 +182,8 @@
             transition: all 0.2s ease;
         }
 
-        .top-btn:hover {
-            border-color: var(--accent-color);
-        }
+        @media (hover: hover) { .top-btn:hover {
+            border-color: var(--accent-color); } }
 
         .theme-icon-btn {
             background-color: var(--card-bg);
@@ -183,9 +201,8 @@
             transition: all 0.2s ease;
         }
 
-        .theme-icon-btn:hover {
-            border-color: var(--accent-color);
-        }
+        @media (hover: hover) { .theme-icon-btn:hover {
+            border-color: var(--accent-color); } }
 
         .header h1 {
             font-size: 1.5rem;
@@ -232,7 +249,7 @@
             background-color: var(--accent-color);
             color: #ffffff;
             font-weight: 700;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-color) 30%, transparent);
         }
 
         .card {
@@ -256,7 +273,7 @@
         }
 
         .badge {
-            background-color: rgba(16, 185, 129, 0.12);
+            background-color: color-mix(in srgb, var(--accent-color) 12%, transparent);
             color: var(--accent-color);
             padding: 4px 12px;
             border-radius: 20px;
@@ -335,10 +352,9 @@
             transition: all 0.2s;
         }
 
-        .audio-btn:hover {
+        @media (hover: hover) { .audio-btn:hover {
             border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
+            color: var(--accent-color); } }
 
         .actions {
             display: flex;
@@ -364,10 +380,9 @@
             transition: all 0.2s;
         }
 
-        .btn:hover {
+        @media (hover: hover) { .btn:hover {
             border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
+            color: var(--accent-color); } }
 
         .btn-primary {
             background-color: var(--accent-color);
@@ -447,9 +462,8 @@
             transition: border-color 0.2s;
         }
 
-        .fav-item:hover {
-            border-color: var(--accent-color);
-        }
+        @media (hover: hover) { .fav-item:hover {
+            border-color: var(--accent-color); } }
 
         .fav-info {
             display: flex;
@@ -514,7 +528,8 @@
         }
 
         /* Light Mode Destekleri */
-        body.light-mode {
+        html.light-mode {
+            color-scheme: light;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #0f172a;
@@ -1040,32 +1055,29 @@
         }, 2000);
     }
 
+    // Tarayıcı çubuğu rengini (theme-color) o anki arka plan rengine eşitler
+    function updateThemeColor() {
+        const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-color').trim();
+        const m = document.querySelector('meta[name="theme-color"]');
+        if (m && bg) m.setAttribute('content', bg);
+    }
+
+    function toggleTheme() {
+        const isLight = document.documentElement.classList.toggle('light-mode');
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = isLight ? '☀️' : '🌙';
+        updateThemeColor();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        let isLight = (savedTheme === 'light') || (!savedTheme && !systemPrefersDark);
-        
+        // Tema sınıfı head scriptinde <html> üzerine eklendi; burada yalnızca buton ikonu eşitlenir
         const themeBtn = document.getElementById('theme-btn');
-        
         if (themeBtn) {
-            themeBtn.textContent = isLight ? '☀️' : '🌙';
+            themeBtn.textContent = document.documentElement.classList.contains('light-mode') ? '☀️' : '🌙';
+            themeBtn.addEventListener('click', toggleTheme);
         }
-
-        if (isLight) {
-            document.documentElement.classList.add('light-mode');
-            document.body.classList.add('light-mode');
-        }
-
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                document.documentElement.classList.toggle('light-mode');
-                document.body.classList.toggle('light-mode');
-                
-                const currentIsLight = document.documentElement.classList.contains('light-mode');
-                localStorage.setItem('theme', currentIsLight ? 'light' : 'dark');
-                themeBtn.textContent = currentIsLight ? '☀️' : '🌙';
-            });
-        }
+        updateThemeColor();
 
         const savedLang = localStorage.getItem('user_lang') || 'tr';
         applyTranslations(savedLang);
