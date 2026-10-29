@@ -336,6 +336,8 @@
 
         .audio-actions {
             display: flex;
+            flex-direction: column;
+            gap: 8px;
             border-top: 1px dashed var(--border-color);
             padding-top: 12px;
         }
@@ -585,6 +587,7 @@
 
         <div class="audio-actions" id="audio-container">
             <button class="audio-btn" id="btn-audio-ar" onclick="playArabic()" data-i18n="audio_btn">🎙️ Hafız Tilaveti (Arapça Dinle)</button>
+            <div id="audio-note" data-i18n="audio_note" style="display:none;font-size:0.75rem;opacity:0.75;text-align:center;">Ses, ayetin tamamını okur; yukarıdaki metin ayetten bir bölümdür.</div>
         </div>
 
         <div class="actions">
@@ -620,6 +623,7 @@
             fav_btn: "⭐ Favorilerim",
             audio_btn: "🎙️ Hafız Tilaveti (Arapça Dinle)",
             audio_stop: "⏹ Durdur",
+            audio_note: "Ses, ayetin tamamını okur; yukarıdaki metin ayetten bir bölümdür.",
             audio_loading: "⌛ Yükleniyor...",
             btn_copy: "📋 Kopyala",
             btn_share: "🔗 Paylaş",
@@ -645,6 +649,7 @@
             fav_btn: "⭐ Favorites",
             audio_btn: "🎙️ Recitation (Listen Arabic)",
             audio_stop: "⏹ Stop",
+            audio_note: "The recitation covers the whole verse; the text above is a part of it.",
             audio_loading: "⌛ Loading...",
             btn_copy: "📋 Copy",
             btn_share: "🔗 Share",
@@ -670,6 +675,7 @@
             fav_btn: "⭐ المفضلة",
             audio_btn: "🎙️ تلاوة القارئ (استمع بالعربية)",
             audio_stop: "⏹ إيقاف",
+            audio_note: "التلاوة تشمل الآية كاملة، والنص أعلاه جزء منها.",
             audio_loading: "⌛ جاري التحميل...",
             btn_copy: "📋 نسخ",
             btn_share: "🔗 مشاركة",
@@ -700,7 +706,7 @@
         },
         {
             type: "Ayet-i Kerime",
-            sura: 13, ayah: 28,
+            sura: 13, ayah: 28, partial: true,
             arabic: "أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ",
             meaning: "Bilesiniz ki, kalpler ancak Allah'ı anmakla huzur bulur.",
             source: "Ra'd Suresi, 28. Ayet"
@@ -714,28 +720,28 @@
         },
         {
             type: "Ayet-i Kerime",
-            sura: 52, ayah: 48,
+            sura: 52, ayah: 48, partial: true,
             arabic: "وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا",
             meaning: "Rabbinin hükmüne sabret. Çünkü sen gözümüzün önündesin.",
             source: "Tûr Suresi, 48. Ayet"
         },
         {
             type: "Ayet-i Kerime",
-            sura: 3, ayah: 173,
+            sura: 3, ayah: 173, partial: true,
             arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
             meaning: "Allah bize yeter, O ne güzel vekildir.",
             source: "Âl-i İmrân Suresi, 173. Ayet"
         },
         {
             type: "Ayet-i Kerime",
-            sura: 2, ayah: 186,
+            sura: 2, ayah: 186, partial: true,
             arabic: "وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ ۖ أُجِيبُ دَعْوَةَ الدَّاعِ إِذَا دَعَانِ",
             meaning: "Kullarım sana beni sorarlarsa şüphesiz ben yakınım. Dua edenin duasına icabet ederim.",
             source: "Bakara Suresi, 186. Ayet"
         },
         {
             type: "Ayet-i Kerime",
-            sura: 2, ayah: 153,
+            sura: 2, ayah: 153, partial: true,
             arabic: "إِنَّ اللَّهَ مَعَ الصَّابِرِينَ",
             meaning: "Şüphesiz Allah sabredenlerle beraberdir.",
             source: "Bakara Suresi, 153. Ayet"
@@ -749,14 +755,14 @@
         },
         {
             type: "Günün Duası",
-            sura: 20, ayah: 25,
+            sura: 20, ayah: 25, ayahEnd: 26,
             arabic: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي",
             meaning: "Rabbim! Göğsümü genişlet, işimi kolaylaştır.",
             source: "Tâhâ Suresi, 25-26. Ayetler"
         },
         {
             type: "Günün Duası",
-            sura: 21, ayah: 87,
+            sura: 21, ayah: 87, partial: true,
             arabic: "لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
             meaning: "Senden başka hiçbir ilah yoktur. Seni tenzih ederim. Şüphesiz ben zalimlerden oldum.",
             source: "Enbiyâ Suresi, 87. Ayet (Hz. Yunus'un Duası)"
@@ -803,7 +809,39 @@
             arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
             meaning: "Sinizin en hayırlınız, Kur'an'ı öğrenen ve öğreteninizdir.",
             source: "Riyâzü’s-Sâlihîn, 999 (Buhârî, Fezâilü'l-Kur'ân 21)"
-        }
+        },
+        { type: "Ayet-i Kerime", sura: 1, ayah: 5, arabic: "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", meaning: "Yalnız sana ibadet eder, yalnız senden yardım dileriz.", source: "Fâtiha Suresi, 5. Ayet" },
+        { type: "Ayet-i Kerime", sura: 112, ayah: 1, arabic: "قُلْ هُوَ اللَّهُ أَحَدٌ", meaning: "De ki: O, Allah'tır, bir tektir.", source: "İhlâs Suresi, 1. Ayet" },
+        { type: "Ayet-i Kerime", sura: 93, ayah: 3, arabic: "مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ", meaning: "Rabbin seni terk etmedi, sana darılmadı da.", source: "Duhâ Suresi, 3. Ayet" },
+        { type: "Ayet-i Kerime", sura: 93, ayah: 5, arabic: "وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ", meaning: "Elbette Rabbin sana verecek, sen de hoşnut olacaksın.", source: "Duhâ Suresi, 5. Ayet" },
+        { type: "Ayet-i Kerime", sura: 94, ayah: 5, arabic: "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا", meaning: "Elbette zorluğun yanında bir kolaylık vardır.", source: "İnşirah Suresi, 5. Ayet" },
+        { type: "Ayet-i Kerime", sura: 65, ayah: 3, arabic: "وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ ۚ وَمَنْ يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ ۚ إِنَّ اللَّهَ بَالِغُ أَمْرِهِ ۚ قَدْ جَعَلَ اللَّهُ لِكُلِّ شَيْءٍ قَدْرًا", meaning: "Onu ummadığı yerden rızıklandırır. Kim Allah'a tevekkül ederse O, ona yeter. Allah emrini yerine getirendir. Allah her şey için bir ölçü koymuştur.", source: "Talâk Suresi, 3. Ayet" },
+        { type: "Ayet-i Kerime", sura: 9, ayah: 40, partial: true, arabic: "لَا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا", meaning: "Üzülme, çünkü Allah bizimle beraberdir.", source: "Tevbe Suresi, 40. Ayet" },
+        { type: "Ayet-i Kerime", sura: 39, ayah: 53, partial: true, arabic: "لَا تَقْنَطُوا مِنْ رَحْمَةِ اللَّهِ", meaning: "Allah'ın rahmetinden ümidinizi kesmeyin.", source: "Zümer Suresi, 53. Ayet" },
+        { type: "Günün Duası", sura: 3, ayah: 8, arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً ۚ إِنَّكَ أَنْتَ الْوَهَّابُ", meaning: "Rabbimiz! Bizi doğru yola ilettikten sonra kalplerimizi eğriltme; bize katından bir rahmet bağışla. Şüphesiz sen çok bağışlayansın.", source: "Âl-i İmrân Suresi, 8. Ayet" },
+        { type: "Günün Duası", sura: 25, ayah: 74, arabic: "وَالَّذِينَ يَقُولُونَ رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا", meaning: "Onlar: Rabbimiz! Bize eşlerimizden ve çocuklarımızdan gözümüzün nuru olacak kimseler bağışla ve bizi takva sahiplerine önder kıl, derler.", source: "Furkân Suresi, 74. Ayet" },
+        { type: "Günün Duası", sura: 14, ayah: 40, arabic: "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ", meaning: "Rabbim! Beni namazı devamlı kılan biri yap, soyumdan da böyle kimseler var et. Rabbimiz! Duamı kabul buyur.", source: "İbrâhîm Suresi, 40. Ayet" },
+        { type: "Günün Duası", sura: 7, ayah: 23, partial: true, arabic: "رَبَّنَا ظَلَمْنَا أَنْفُسَنَا وَإِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ", meaning: "Rabbimiz! Kendimize zulmettik. Eğer bizi bağışlamaz ve bize merhamet etmezsen mutlaka ziyana uğrayanlardan oluruz.", source: "A'râf Suresi, 23. Ayet (Hz. Âdem'in Duası)" },
+        { type: "Günün Duası", sura: 2, ayah: 286, partial: true, arabic: "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا", meaning: "Rabbimiz! Unutur ya da yanılırsak bizi sorumlu tutma.", source: "Bakara Suresi, 286. Ayet" },
+        { type: "Günün Duası", sura: 28, ayah: 24, partial: true, arabic: "رَبِّ إِنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ", meaning: "Rabbim! Bana indireceğin her hayra muhtacım.", source: "Kasas Suresi, 24. Ayet (Hz. Mûsâ'nın Duası)" },
+        { type: "Günün Duası", sura: 21, ayah: 83, partial: true, arabic: "أَنِّي مَسَّنِيَ الضُّرُّ وَأَنْتَ أَرْحَمُ الرَّاحِمِينَ", meaning: "Başıma bu dert geldi. Sen merhametlilerin en merhametlisisin.", source: "Enbiyâ Suresi, 83. Ayet (Hz. Eyyûb'un Duası)" },
+        { type: "Günün Duası", sura: 20, ayah: 114, partial: true, arabic: "وَقُلْ رَبِّ زِدْنِي عِلْمًا", meaning: "De ki: Rabbim! İlmimi artır.", source: "Tâhâ Suresi, 114. Ayet" },
+        { type: "Günün Duası", sura: 9, ayah: 129, partial: true, arabic: "حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ ۖ عَلَيْهِ تَوَكَّلْتُ ۖ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ", meaning: "Allah bana yeter. O'ndan başka ilah yoktur. Yalnız O'na tevekkül ettim. O, yüce arşın sahibidir.", source: "Tevbe Suresi, 129. Ayet" },
+        { type: "Günün Duası", sura: null, ayah: null, arabic: "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ", meaning: "Ey kalpleri evirip çeviren Allah'ım! Kalbimi dinin üzere sabit kıl.", source: "Tirmizî, Deavât" },
+        { type: "Günün Duası", sura: null, ayah: null, arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ", meaning: "Allah'ım! Seni anmam, sana şükretmem ve sana güzel ibadet etmem için bana yardım et.", source: "Ebû Dâvûd, Vitr; Nesâî, Sehv" },
+        { type: "Günün Duası", sura: null, ayah: null, arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ", meaning: "Allah'ım! Dünyada ve ahirette senden af ve afiyet dilerim.", source: "İbn Mâce, Duâ" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", meaning: "Kim Allah'a ve ahiret gününe iman ediyorsa ya hayır söylesin ya da sussun.", source: "Buhârî, Edeb; Müslim, Îmân" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ", meaning: "Güçlü kimse güreşte rakibini yenen değil, öfke anında kendine hâkim olandır.", source: "Buhârî, Edeb; Müslim, Birr" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "الطُّهُورُ شَطْرُ الْإِيمَانِ", meaning: "Temizlik imanın yarısıdır.", source: "Müslim, Tahâret" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ", meaning: "Güzel söz sadakadır.", source: "Buhârî, Cihâd; Müslim, Zekât" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "مَنْ لَا يَرْحَمْ لَا يُرْحَمْ", meaning: "Merhamet etmeyene merhamet edilmez.", source: "Buhârî, Edeb; Müslim, Fezâil" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ", meaning: "Allah sizin suretlerinize ve mallarınıza bakmaz; kalplerinize ve amellerinize bakar.", source: "Müslim, Birr" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "يَسِّرُوا وَلَا تُعَسِّرُوا وَبَشِّرُوا وَلَا تُنَفِّرُوا", meaning: "Kolaylaştırın, zorlaştırmayın; müjdeleyin, nefret ettirmeyin.", source: "Buhârî, İlim; Müslim, Cihâd" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ", meaning: "Allah'a en sevimli amel, az da olsa devamlı olandır.", source: "Buhârî, Rikâk; Müslim, Müsâfirîn" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ", meaning: "Kim bir hayra vesile olursa, onu yapan kişinin sevabı gibi sevap alır.", source: "Müslim, İmâre" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ", meaning: "Nerede olursan ol Allah'tan sakın; kötülüğün ardından bir iyilik yap ki onu silsin; insanlara güzel ahlâkla davran.", source: "Tirmizî, Birr" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "مِنْ حُسْنِ إِسْلَامِ الْمَرْءِ تَرْكُهُ مَا لَا يَعْنِيهِ", meaning: "Kişinin kendisini ilgilendirmeyen şeyleri bırakması, İslâm'ının güzelliğindendir.", source: "Tirmizî, Zühd; İbn Mâce, Fiten" },
+        { type: "Hadis-i Şerif", sura: null, ayah: null, arabic: "كُلُّكُمْ رَاعٍ وَكُلُّكُمْ مَسْئُولٌ عَنْ رَعِيَّتِهِ", meaning: "Hepiniz çobansınız ve hepiniz sorumluluğunuz altındakilerden sorumlusunuz.", source: "Buhârî, Cum'a; Müslim, İmâre" }
     ];
 
     let currentFilter = 'all';
@@ -866,23 +904,27 @@
         } else {
             audioContainer.style.display = 'flex';
         }
+        const note = document.getElementById('audio-note');
+        if (note) note.style.display = item.partial ? 'block' : 'none';
 
         updateFavIcon();
     }
 
+    const shuffleBag = {};
     function getRandomContent() {
         const filtered = getFilteredDatabase();
         if (filtered.length === 0) return;
-
-        let newItem;
-        let newIndex;
-        do {
-            const randFilteredIdx = Math.floor(Math.random() * filtered.length);
-            newItem = filtered[randFilteredIdx];
-            newIndex = database.indexOf(newItem);
-        } while (newIndex === currentIndex && filtered.length > 1);
-        
-        renderContent(newIndex);
+        let bag = shuffleBag[currentFilter];
+        if (!bag || bag.length === 0) {
+            bag = filtered.map(i => database.indexOf(i));
+            for (let i = bag.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [bag[i], bag[j]] = [bag[j], bag[i]];
+            }
+            if (bag.length > 1 && bag[bag.length - 1] === currentIndex) bag.reverse();
+            shuffleBag[currentFilter] = bag;
+        }
+        renderContent(bag.pop());
     }
 
     function updateFavIcon() {
@@ -982,24 +1024,29 @@
         }
 
         btn.innerText = t.audio_loading;
+        isPlaying = true;
 
-        const suraStr = String(item.sura).padStart(3, '0');
-        const ayahStr = String(item.ayah).padStart(3, '0');
-        const audioUrl = `https://everyayah.com/data/Alafasy_128kbps/${suraStr}${ayahStr}.mp3`;
-
-        currentAudio = new Audio(audioUrl);
-
-        currentAudio.play().then(() => {
-            isPlaying = true;
-            btn.innerText = t.audio_stop;
-        }).catch(() => {
-            stopAudio();
-            showToast(t.toast_audio_fail);
-        });
-
-        currentAudio.onended = () => {
-            stopAudio();
+        const last = item.ayahEnd || item.ayah;
+        const urls = [];
+        for (let a = item.ayah; a <= last; a++) {
+            urls.push(`https://everyayah.com/data/Alafasy_128kbps/${String(item.sura).padStart(3, '0')}${String(a).padStart(3, '0')}.mp3`);
+        }
+        let i = 0;
+        const playNext = () => {
+            const audio = new Audio(urls[i]);
+            currentAudio = audio;
+            const fail = () => { if (currentAudio === audio) { stopAudio(); showToast(t.toast_audio_fail); } };
+            audio.onerror = fail;
+            audio.onended = () => {
+                if (currentAudio !== audio) return;
+                i++;
+                if (i < urls.length) playNext(); else stopAudio();
+            };
+            audio.play().then(() => {
+                if (currentAudio === audio) btn.innerText = t.audio_stop;
+            }).catch(fail);
         };
+        playNext();
     }
 
     function copyContent() {
