@@ -167,6 +167,18 @@
             transform: scaleX(-1);
         }
 
+        /* ☰ menü düğmesi: ← düğmesinin hemen yanında (42px + 8px boşluk) */
+        .menu-btn {
+            position: absolute;
+            left: 50px;
+            top: 0;
+        }
+
+        [dir="rtl"] .menu-btn {
+            left: auto;
+            right: 50px;
+        }
+
         @media (hover: hover) { .home-btn:hover {
             border-color: var(--accent-color);
             color: var(--accent-color); } }
@@ -551,7 +563,7 @@
 <div class="container">
     <div class="header">
         <a href="https://ayetinvakti.github.io/" class="home-btn" title="Ana Sayfa">←</a>
-        <button class="icon-btn" data-drawer-toggle aria-label="Menü">☰</button>
+        <button class="theme-icon-btn menu-btn" data-drawer-toggle aria-label="Menü" title="Menü">☰</button>
         <div class="top-nav">
             <button class="top-btn" onclick="openFavoritesModal()" data-i18n="fav_btn">⭐ Favorilerim</button>
             <button class="theme-icon-btn" id="theme-btn" title="Tema Değiştir">🌙</button>
