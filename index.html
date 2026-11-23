@@ -418,6 +418,8 @@
             border-color: var(--accent-color);
             color: var(--accent-color); } }
 
+        .actions .btn { padding: 11px 4px; font-size: 0.78rem; }
+
         .btn-primary {
             background-color: var(--accent-color);
             color: #ffffff;
@@ -620,6 +622,7 @@
         <div class="actions">
             <button class="btn" onclick="copyContent()" data-i18n="btn_copy">📋 Kopyala</button>
             <button class="btn" onclick="shareContent()" data-i18n="btn_share">🔗 Paylaş</button>
+            <button class="btn" id="btn-card" onclick="shareCard()" data-i18n="btn_card">🖼️ Kart</button>
             <button class="btn btn-primary" onclick="getRandomContent()" data-i18n="btn_new">Yeni 🌟</button>
         </div>
     </div>
@@ -654,6 +657,7 @@
             audio_loading: "⌛ Yükleniyor...",
             btn_copy: "📋 Kopyala",
             btn_share: "🔗 Paylaş",
+            btn_card: "🖼️ Kart",
             btn_new: "Yeni 🌟",
             footer_text: "Huzur ve İbadet Rehberliğiniz",
             modal_title: "⭐ Favori İçeriklerim",
@@ -662,6 +666,8 @@
             toast_removed: "Favorilerden çıkarıldı.",
             toast_copied: "Metin kopyalandı!",
             toast_copy_fail: "Kopyalama başarısız oldu.",
+            toast_card_saved: "Kart indirildi.",
+            toast_card_fail: "Kart oluşturulamadı.",
             toast_audio_fail: "Ses yüklenirken bir hata oluştu.",
             tab_all: "Tümü",
             tab_verse: "Ayetler",
@@ -680,6 +686,7 @@
             audio_loading: "⌛ Loading...",
             btn_copy: "📋 Copy",
             btn_share: "🔗 Share",
+            btn_card: "🖼️ Card",
             btn_new: "New 🌟",
             footer_text: "Your Guide to Peace & Worship",
             modal_title: "⭐ My Favorite Items",
@@ -688,6 +695,8 @@
             toast_removed: "Removed from favorites.",
             toast_copied: "Text copied!",
             toast_copy_fail: "Copy failed.",
+            toast_card_saved: "Card downloaded.",
+            toast_card_fail: "Could not create the card.",
             toast_audio_fail: "Error loading audio.",
             tab_all: "All",
             tab_verse: "Verses",
@@ -706,6 +715,7 @@
             audio_loading: "⌛ جاري التحميل...",
             btn_copy: "📋 نسخ",
             btn_share: "🔗 مشاركة",
+            btn_card: "🖼️ بطاقة",
             btn_new: "جديد 🌟",
             footer_text: "دليلك للسلام والعبادة",
             modal_title: "⭐ المحتوى المفضل لدي",
@@ -714,6 +724,8 @@
             toast_removed: "تمت الإزالة من المفضلة.",
             toast_copied: "تم نسخ النص!",
             toast_copy_fail: "فشل النسخ.",
+            toast_card_saved: "تم تنزيل البطاقة.",
+            toast_card_fail: "تعذر إنشاء البطاقة.",
             toast_audio_fail: "حدث خطأ أثناء تحميل الصوت.",
             tab_all: "الكل",
             tab_verse: "آيات",
@@ -1122,6 +1134,165 @@
         } else {
             copyContent();
         }
+    }
+
+    // ---- Paylaşım kartı (PNG): ekrandaki içeriği ve tema renklerini kullanır ----
+    let cardBusy = false;
+
+    function cardWrap(ctx, text, maxW) {
+        const out = [];
+        String(text).split(/\n+/).forEach(par => {
+            const words = par.trim().split(/\s+/).filter(Boolean);
+            let line = '';
+            words.forEach(w => {
+                const test = line ? line + ' ' + w : w;
+                if (!line || ctx.measureText(test).width <= maxW) line = test;
+                else { out.push(line); line = w; }
+            });
+            if (line) out.push(line);
+        });
+        return out;
+    }
+
+    function cardRoundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+    }
+
+    async function makeCardBlob() {
+        const W = 1080, H = 1350, PAD = 64;
+        const cs = getComputedStyle(document.documentElement);
+        const pick = (n, f) => (cs.getPropertyValue(n).trim() || f);
+        const solid = (c, f) => (!c || c === 'transparent' || /rgba\(.*,\s*0\)$/.test(c)) ? f : c;
+        const accent = pick('--accent-color', '#10b981');
+        const textC = pick('--text-color', '#f8fafc');
+        const muted = pick('--text-muted', '#94a3b8');
+        const border = pick('--border-color', '#334155');
+        const pageBg = solid(getComputedStyle(document.body).backgroundColor, pick('--bg-color', '#0b1120'));
+        const cardBg = solid(getComputedStyle(document.querySelector('.card')).backgroundColor, pick('--card-bg', '#1e293b'));
+        try { await document.fonts.load('400 40px Amiri', 'ءآأ'); await document.fonts.ready; } catch (e) {}
+
+        const rtlUI = document.documentElement.dir === 'rtl';
+        const badge = document.getElementById('type-badge').innerText.trim();
+        const arabic = document.getElementById('arabic-content').innerText.trim();
+        const meaning = document.getElementById('meaning-content').innerText.trim();
+        const source = document.getElementById('source-content').innerText.trim();
+
+        const c = document.createElement('canvas');
+        c.width = W; c.height = H;
+        const ctx = c.getContext('2d');
+        const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+        const ARF = "Amiri, 'Traditional Arabic', serif";
+        const boxX = PAD, boxY = PAD, boxW = W - 2 * PAD, boxH = H - 2 * PAD;
+        const textW = boxW - 120;
+        const y0 = boxY + 60 + 64 + 50;
+        const y1 = boxY + boxH - 60 - 110;
+        const avail = y1 - y0;
+
+        function layout(s) {
+            const aSize = 78 * s, mSize = 44 * s, sSize = 36 * s, gap = 46 * s;
+            ctx.direction = 'rtl';
+            ctx.font = `400 ${aSize}px ${ARF}`;
+            const aLines = cardWrap(ctx, arabic, textW);
+            ctx.direction = rtlUI ? 'rtl' : 'ltr';
+            ctx.font = `italic 400 ${mSize}px ${SANS}`;
+            const mLines = cardWrap(ctx, meaning, textW);
+            ctx.font = `700 ${sSize}px ${SANS}`;
+            const sLines = cardWrap(ctx, source, textW);
+            const aLH = aSize * 1.9, mLH = mSize * 1.5, sLH = sSize * 1.4;
+            const total = aLines.length * aLH + gap + mLines.length * mLH + gap + sLines.length * sLH;
+            return { aSize, mSize, sSize, gap, aLines, mLines, sLines, aLH, mLH, sLH, total };
+        }
+        let L = layout(1);
+        for (let s = 0.95; L.total > avail && s >= 0.4; s -= 0.05) L = layout(s);
+
+        ctx.fillStyle = pageBg;
+        ctx.fillRect(0, 0, W, H);
+        cardRoundRect(ctx, boxX, boxY, boxW, boxH, 48);
+        ctx.fillStyle = cardBg;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = border;
+        ctx.stroke();
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+
+        // rozet
+        ctx.direction = rtlUI ? 'rtl' : 'ltr';
+        ctx.font = `700 34px ${SANS}`;
+        const bw = ctx.measureText(badge).width + 64;
+        const bx = (W - bw) / 2, by = boxY + 60;
+        cardRoundRect(ctx, bx, by, bw, 64, 32);
+        ctx.globalAlpha = 0.15;
+        ctx.fillStyle = accent;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = accent;
+        ctx.fillText(badge, W / 2, by + 44);
+
+        // gövde (dikey ortalı)
+        let y = y0 + Math.max(0, (avail - L.total) / 2);
+        ctx.direction = 'rtl';
+        ctx.font = `400 ${L.aSize}px ${ARF}`;
+        ctx.fillStyle = textC;
+        L.aLines.forEach(t => { y += L.aLH; ctx.fillText(t, W / 2, y - L.aLH * 0.28); });
+        y += L.gap;
+        ctx.direction = rtlUI ? 'rtl' : 'ltr';
+        ctx.font = `italic 400 ${L.mSize}px ${SANS}`;
+        ctx.fillStyle = textC;
+        L.mLines.forEach(t => { y += L.mLH; ctx.fillText(t, W / 2, y - L.mLH * 0.25); });
+        y += L.gap * 0.6;
+        ctx.fillStyle = accent;
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(W / 2 - 60, y, 120, 3);
+        ctx.globalAlpha = 1;
+        y += L.gap * 0.4;
+        ctx.font = `700 ${L.sSize}px ${SANS}`;
+        ctx.fillStyle = accent;
+        L.sLines.forEach(t => { y += L.sLH; ctx.fillText(t, W / 2, y - L.sLH * 0.25); });
+
+        // alt bilgi
+        ctx.direction = 'ltr';
+        ctx.font = `700 44px ${SANS}`;
+        ctx.fillStyle = accent;
+        ctx.fillText('Ayetin Vakti', W / 2, boxY + boxH - 82);
+        ctx.font = `400 28px ${SANS}`;
+        ctx.fillStyle = muted;
+        ctx.fillText('ayetinvakti.github.io', W / 2, boxY + boxH - 40);
+
+        return new Promise(res => c.toBlob(res, 'image/png'));
+    }
+
+    async function shareCard() {
+        if (cardBusy) return;
+        cardBusy = true;
+        const lang = localStorage.getItem('user_lang') || 'tr';
+        const t = translations[lang] || translations.tr;
+        try {
+            const blob = await makeCardBlob();
+            if (!blob) throw new Error('blob');
+            const file = new File([blob], 'ayetin-vakti.png', { type: 'image/png' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try { await navigator.share({ files: [file], title: 'Ayetin Vakti' }); }
+                catch (e) { if (!e || e.name !== 'AbortError') throw e; }
+            } else {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'ayetin-vakti.png';
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 4000);
+                showToast(t.toast_card_saved);
+            }
+        } catch (err) {
+            showToast(t.toast_card_fail);
+        }
+        cardBusy = false;
     }
 
     function showToast(message) {
